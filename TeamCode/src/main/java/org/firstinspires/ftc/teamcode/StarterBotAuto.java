@@ -309,7 +309,7 @@ public class StarterBotAuto extends OpMode
          * of the members of the enum for a match, since if we find the "break" line in one case,
          * we know our enum isn't reflecting a different state.
          */
-        switch (autonomousState){
+        switch (autonomousState) {
             /*
              * Since the first state of our auto is LAUNCH, this is the first "case" we encounter.
              * This case is very simple. We call our .launch() function with "true" in the parameter.
@@ -335,9 +335,9 @@ public class StarterBotAuto extends OpMode
                  * state on our state machine. Otherwise, we reset the encoders on our drive motors
                  * and move onto the next state.
                  */
-                if(launch(false)) {
+                if (launch(false)) {
                     shotsToFire -= 1;
-                    if(shotsToFire > 0) {
+                    if (shotsToFire > 0) {
                         autonomousState = AutonomousState.LAUNCH;
                     } else {
                         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -409,6 +409,7 @@ public class StarterBotAuto extends OpMode
                     autonomousState = AutonomousState.COMPLETE;
                 }
                 break;
+        }
         /*
          * Here is our telemetry that keeps us informed of what is going on in the robot. Since this
          * part of the code exists outside of our switch statement, it will run once every loop.
@@ -426,22 +427,11 @@ public class StarterBotAuto extends OpMode
         telemetry.update();
     }
 
-    /*
-     * This code runs ONCE after the driver hits STOP.
-     */
     @Override
     public void stop() {
     }
 
-    /**
-     * Launches one ball, when a shot is requested spins up the motor and once it is above a minimum
-     * velocity, runs the feeder servos for the right amount of time to feed the next ball.
-     * @param shotRequested "true" if the user would like to fire a new shot, and "false" if a shot
-     *                      has already been requested and we need to continue to move through the
-     *                      state machine and launch the ball.
-     * @return "true" for one cycle after a ball has been successfully launched, "false" otherwise.
-     */
-    boolean launch(boolean shotRequested){
+    public boolean launch(boolean shotRequested){
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
@@ -480,7 +470,7 @@ public class StarterBotAuto extends OpMode
      * @return "true" if the motors are within tolerance of the target position for more than
      * holdSeconds. "false" otherwise.
      */
-    boolean drive(double speed, double distance, DistanceUnit distanceUnit, double holdSeconds) {
+    public boolean drive(double speed, double distance, DistanceUnit distanceUnit, double holdSeconds) {
         final double TOLERANCE_MM = 10;
         /*
          * In this function we use a DistanceUnits. This is a class that the FTC SDK implements
@@ -530,7 +520,7 @@ public class StarterBotAuto extends OpMode
      * @return True if the motors are within tolerance of the target position for more than
      *         holdSeconds. False otherwise.
      */
-    boolean rotate(double speed, double angle, AngleUnit angleUnit, double holdSeconds){
+    public boolean rotate(double speed, double angle, AngleUnit angleUnit, double holdSeconds){
         final double TOLERANCE_MM = 10;
 
         /*
@@ -570,6 +560,5 @@ public class StarterBotAuto extends OpMode
 
     }
 }
-
 
 
