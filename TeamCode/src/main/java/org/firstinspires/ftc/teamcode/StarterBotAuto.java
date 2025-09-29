@@ -158,9 +158,7 @@ public class StarterBotAuto extends OpMode
     private enum AutonomousState {
         LAUNCH,
         WAIT_FOR_LAUNCH,
-        DRIVING_AWAY_FROM_GOAL,
-        ROTATING,
-        DRIVING_OFF_LINE,
+        STRAFE_RIGHT,
         COMPLETE;
     }
 
@@ -347,17 +345,21 @@ public class StarterBotAuto extends OpMode
                         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         launcher.setVelocity(0);
-                        autonomousState = AutonomousState.DRIVING_AWAY_FROM_GOAL;
+
+                        // reset timer before strafing
+                        driveTimer.reset();
+                        //go to strafe
+                        autonomousState = AutonomousState.STRAFE_RIGHT;
                     }
                 }
                 break;
-
+/*
             case DRIVING_AWAY_FROM_GOAL:
-                /*
+
                  * This is another function that returns a boolean. This time we return "true" if
                  * the robot has been within a tolerance of the target position for "holdSeconds."
                  * Once the function returns "true" we reset the encoders again and move on.
-                 */
+
                 if(drive(DRIVE_SPEED, -4, DistanceUnit.INCH, 1)){
                     leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -384,12 +386,29 @@ public class StarterBotAuto extends OpMode
                 break;
 
             case DRIVING_OFF_LINE:
+
                 if(drive(DRIVE_SPEED, -26, DistanceUnit.INCH, 1)){
-                    autonomousState = AutonomousState.COMPLETE;
+                   autonomousState = AutonomousState.COMPLETE;
                 }
                 break;
         }
 
+ */
+            case STRAFE_RIGHT:
+                leftFrontDrive.setPower(0.5);
+                leftBackDrive.setPower(-0.5);
+                rightFrontDrive.setPower(-0.5);
+                rightBackDrive.setPower(0.5);
+
+                if (driveTimer.milliseconds() > 1500) {
+                    leftFrontDrive.setPower(0);
+                    leftBackDrive.setPower(0);
+                    rightFrontDrive.setPower(0);
+                    rightBackDrive.setPower(0);
+
+                    autonomousState = AutonomousState.COMPLETE;
+                }
+                break;
         /*
          * Here is our telemetry that keeps us informed of what is going on in the robot. Since this
          * part of the code exists outside of our switch statement, it will run once every loop.
