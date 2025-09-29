@@ -75,7 +75,7 @@ public class StarterBotAuto extends OpMode
      * velocity. Here we are setting the target and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
+    final double LAUNCHER_TARGET_VELOCITY = 1400;
     final double LAUNCHER_MIN_VELOCITY = 1075;
 
     /*
@@ -198,8 +198,8 @@ public class StarterBotAuto extends OpMode
          */
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         launcher = hardwareMap.get(DcMotorEx.class,"launcher");
         leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
@@ -212,6 +212,7 @@ public class StarterBotAuto extends OpMode
          * Note: The settings here assume direct drive on left and right wheels. Gear
          * Reduction or 90° drives may require direction flips
          */
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -394,6 +395,7 @@ public class StarterBotAuto extends OpMode
         }
 
  */
+
             case STRAFE_RIGHT:
                 leftFrontDrive.setPower(0.5);
                 leftBackDrive.setPower(-0.5);

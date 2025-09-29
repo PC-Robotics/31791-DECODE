@@ -58,12 +58,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * we will also need to adjust the "PIDF" coefficients with some that are a better fit for our application.
  */
 
-@TeleOp(name = "StarterBotTeleopMecanums", group = "StarterBot")
+@TeleOp(name = "CarterTest", group = "StarterBot")
 //@Disabled
 public class StarterBotTeleopMecanums extends OpMode {
     final double FEED_TIME_SECONDS = 0.20; //The feeder servos run this long when a shot is requested.
     final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
     final double FULL_SPEED = 1.0;
+    final double LAUNCHDURATION_SECONDS = 2.0; //The amount of time to wait before turning off the flywheel
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -71,7 +72,7 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1250;
+    final double LAUNCHER_TARGET_VELOCITY = 1125;
     final double LAUNCHER_MIN_VELOCITY = 1075;
 
     // Declare OpMode members.
@@ -84,6 +85,7 @@ public class StarterBotTeleopMecanums extends OpMode {
     private CRServo rightFeeder = null;
 
     ElapsedTime feederTimer = new ElapsedTime();
+    ElapsedTime StopTimer = new ElapsedTime();
 
     /*
      * TECH TIP: State Machines
@@ -274,7 +276,7 @@ public class StarterBotTeleopMecanums extends OpMode {
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
                 }
-                else
+                else if(StopTimer.seconds() > LAUNCHDURATION_SECONDS)
                 {
                     launcher.setVelocity(0);
                 }
@@ -294,6 +296,7 @@ public class StarterBotTeleopMecanums extends OpMode {
             case LAUNCHING:
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
                     launchState = LaunchState.IDLE;
+                    StopTimer.reset();
                     leftFeeder.setPower(STOP_SPEED);
                     rightFeeder.setPower(STOP_SPEED);
                 }
