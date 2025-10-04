@@ -62,9 +62,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
 
-@Autonomous(name="StarterBotAuto", group="StarterBot")
+@Autonomous(name="StarterBotAutoBlue", group="StarterBot")
 //@Disabled
-public class StarterBotAuto extends OpMode
+public class StarterBotAutoBlue extends OpMode
 {
 
     final double FEED_TIME = 0.20; //The feeder servos run this long when a shot is requested.
@@ -75,8 +75,8 @@ public class StarterBotAuto extends OpMode
      * velocity. Here we are setting the target and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1400;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
+    final double LAUNCHER_TARGET_VELOCITY = 1220;
+    final double LAUNCHER_MIN_VELOCITY = 1160;
 
     /*
      * The number of seconds that we wait between each of our 3 shots from the launcher. This
@@ -103,6 +103,7 @@ public class StarterBotAuto extends OpMode
     final double TRACK_WIDTH_MM = 404;
 
     int shotsToFire = 3; //The number of shots to fire in this auto.
+    int currentShotNumber = 0; // the number of shots we've already done
 
     double robotRotationAngle = 45;
 
@@ -213,8 +214,8 @@ public class StarterBotAuto extends OpMode
          * Reduction or 90° drives may require direction flips
          */
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -339,6 +340,7 @@ public class StarterBotAuto extends OpMode
                 if (launch(false)) {
                     shotsToFire -= 1;
                     if (shotsToFire > 0) {
+
                         autonomousState = AutonomousState.LAUNCH;
                     } else {
                         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -397,10 +399,15 @@ public class StarterBotAuto extends OpMode
  */
 
             case STRAFE_RIGHT:
-                leftFrontDrive.setPower(0.5);
-                leftBackDrive.setPower(-0.5);
-                rightFrontDrive.setPower(-0.5);
-                rightBackDrive.setPower(0.5);
+                leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                leftFrontDrive.setPower(-0.5);
+                leftBackDrive.setPower(0.5);
+                rightFrontDrive.setPower(0.5);
+                rightBackDrive.setPower(-0.5);
 
                 if (driveTimer.milliseconds() > 1500) {
                     leftFrontDrive.setPower(0);

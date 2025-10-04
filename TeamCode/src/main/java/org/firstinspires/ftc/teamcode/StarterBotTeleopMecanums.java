@@ -72,8 +72,10 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
+    final double LAUNCHER_TARGET_VELOCITY = 1220;
+    final double LAUNCHER_MIN_VELOCITY = 1160;
+    final double LAUNCHER_HIGH_VELOCITY = 2000;
+    final double LAUNCHER_LOWER_VELOCITY = 1900;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
@@ -234,6 +236,7 @@ public class StarterBotTeleopMecanums extends OpMode {
          * Now we call our "Launch" function.
          */
         launch(gamepad1.rightBumperWasPressed());
+        launchMax(gamepad1.leftBumperWasPressed());
 
         /*
          * Show the state and motor powers
@@ -284,6 +287,39 @@ public class StarterBotTeleopMecanums extends OpMode {
             case SPIN_UP:
                 launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
                 if (launcher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
+                    launchState = LaunchState.LAUNCH;
+                }
+                break;
+            case LAUNCH:
+                leftFeeder.setPower(FULL_SPEED);
+                rightFeeder.setPower(FULL_SPEED);
+                feederTimer.reset();
+                launchState = LaunchState.LAUNCHING;
+                break;
+            case LAUNCHING:
+                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
+                    launchState = LaunchState.IDLE;
+                    StopTimer.reset();
+                    leftFeeder.setPower(STOP_SPEED);
+                    rightFeeder.setPower(STOP_SPEED);
+                }
+                break;
+        }
+    }
+    void launchMax(boolean shotRequested) {
+        switch (launchState) {
+            case IDLE:
+                if (shotRequested) {
+                    launchState = LaunchState.SPIN_UP;
+                }
+                else if(StopTimer.seconds() > LAUNCHDURATION_SECONDS)
+                {
+                    launcher.setVelocity(0);
+                }
+                break;
+            case SPIN_UP:
+                launcher.setVelocity(LAUNCHER_HIGH_VELOCITY);
+                if (launcher.getVelocity() > LAUNCHER_LOWER_VELOCITY) {
                     launchState = LaunchState.LAUNCH;
                 }
                 break;
