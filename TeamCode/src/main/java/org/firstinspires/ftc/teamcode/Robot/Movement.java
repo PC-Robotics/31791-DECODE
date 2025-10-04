@@ -9,7 +9,8 @@ public class Movement {
     }
 
     public void goForward(){
-
+        robot.leftFrontDrive.setPower(100);
     }
+
 
 }
