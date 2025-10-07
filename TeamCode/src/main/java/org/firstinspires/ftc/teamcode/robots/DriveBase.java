@@ -37,10 +37,10 @@ public class DriveBase
      */
     public void init()
     {
-        leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "leftFront");
-        leftRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "leftRear");
-        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class,"rightFront");
-        rightRearDrive = myOpMode.hardwareMap.get(DcMotor.class,"rightRear");
+        leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
+        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
 
         // ########################################################################################

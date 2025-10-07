@@ -44,6 +44,7 @@ public class DriveBaseOdometry extends DriveBase
         number of ticks per mm of your odometry pod.
          */
         //TODO: Choose the appropriate pod type
+        //For Starter Bot it is goBILDA_4_BAR_POD
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         //odo.setEncoderResolution(13.26291192);
 
