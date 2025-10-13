@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -38,8 +39,8 @@ public class DriveBase
     public void init()
     {
         leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
+        leftRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
         rightRearDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
 
 
@@ -54,9 +55,9 @@ public class DriveBase
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // TODO: Update this based on how the hub is mounted on the robot
         imu = myOpMode.hardwareMap.get(IMU.class,"imu");
@@ -82,7 +83,7 @@ public class DriveBase
         double max;
 
         // This conversion is based on gmZero.org code
-        if(fieldCentric)
+        /*if(fieldCentric)
         {
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -90,7 +91,7 @@ public class DriveBase
             axial = lateral * Math.sin(-botHeading) + axial * Math.cos(-botHeading);
 
             lateral = rotX;
-        }
+        }*/
 
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
