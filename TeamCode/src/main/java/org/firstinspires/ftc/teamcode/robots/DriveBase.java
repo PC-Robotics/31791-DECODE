@@ -82,13 +82,17 @@ public class DriveBase
         return imu.getRobotYawPitchRollAngles().getYaw(unit);
     }
 
+    public void drive(double axial, double lateral, double yaw)
+    {
+        drive(axial,lateral,yaw,1);
+    }
     /**
      * Standard POV Mecanum drive code
      * @param axial left joystick y value
      * @param lateral left joystick x value
      * @param yaw right joystick x value
      */
-    public void drive(double axial, double lateral, double yaw)
+    public void drive(double axial, double lateral, double yaw, double power)
     {
         double max;
 
@@ -112,10 +116,10 @@ public class DriveBase
         double rightRearPower  = (axial + lateral - yaw)/denominator;
 
         // Apply the power to the motors
-        leftFrontDrive.setPower(leftFrontPower);
-        leftRearDrive.setPower(leftRearPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        rightRearDrive.setPower(rightRearPower);
+        leftFrontDrive.setPower(leftFrontPower*power);
+        leftRearDrive.setPower(leftRearPower*power);
+        rightFrontDrive.setPower(rightFrontPower*power);
+        rightRearDrive.setPower(rightRearPower*power);
 
         // Add data to the telemetry for displaying the current motor powers
         myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
