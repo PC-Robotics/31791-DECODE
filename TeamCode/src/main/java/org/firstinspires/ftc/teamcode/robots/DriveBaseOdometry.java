@@ -23,6 +23,12 @@ public class DriveBaseOdometry extends DriveBase
 
     public void init()
     {
+        super.init();
+    }
+
+    @Override
+    protected void setupOdometry()
+    {
         // Initialize the hardware map using the same name that is used on the driver station
         odo = myOpMode.hardwareMap.get(GoBildaPinpointDriver.class,"odo");
 
@@ -55,7 +61,9 @@ public class DriveBaseOdometry extends DriveBase
         you move the robot to the left.
          */
         //TODO: Run the simple odometry teleop and pay attention to telemetry values to make sure the directions are set correctly
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+
+        resetPositionAndOdometry();
 
         myOpMode.telemetry.addData("X offset", odo.getXOffset());
         myOpMode.telemetry.addData("Y offset", odo.getYOffset());
@@ -63,14 +71,14 @@ public class DriveBaseOdometry extends DriveBase
         myOpMode.telemetry.addData("Device Scalar", odo.getYawScalar());
 
         robotPosition = odo.getPosition();
-
-        super.init();
     }
 
     public void updatePositionAndTelemetry()
     {
         updatePosition();
         updateOdometryTelemetry();
+
+        myOpMode.telemetry.addLine("Look Mom, we made it!");
     }
 
     /**
@@ -78,6 +86,7 @@ public class DriveBaseOdometry extends DriveBase
      */
     public void updatePosition()
     {
+        odo.update();
         robotPosition = odo.getPosition();
     }
 
@@ -136,6 +145,7 @@ public class DriveBaseOdometry extends DriveBase
     {
         return robotPosition.getY(unit);
     }
+    @Override
     public double getHeading(AngleUnit unit)
     {
         return robotPosition.getHeading(unit);

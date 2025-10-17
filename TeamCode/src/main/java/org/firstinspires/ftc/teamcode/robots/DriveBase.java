@@ -59,6 +59,15 @@ public class DriveBase
         leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
         rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        setupOdometry();
+
+        myOpMode.telemetry.addData("Status","Initialized");
+        myOpMode.telemetry.update();
+
+    }
+
+    protected void setupOdometry()
+    {
         // TODO: Update this based on how the hub is mounted on the robot
         imu = myOpMode.hardwareMap.get(IMU.class,"imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -66,10 +75,11 @@ public class DriveBase
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
 
         imu.initialize(parameters);
+    }
 
-        myOpMode.telemetry.addData("Status","Initialized");
-        myOpMode.telemetry.update();
-
+    protected double getHeading(AngleUnit unit)
+    {
+        return imu.getRobotYawPitchRollAngles().getYaw(unit);
     }
 
     /**
@@ -85,7 +95,7 @@ public class DriveBase
         // This conversion is based on gmZero.org code
         /*if(fieldCentric)
         {
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double botHeading = getHeading();
 
             double rotX = lateral * Math.cos(-botHeading) - axial * Math.sin(-botHeading);
             axial = lateral * Math.sin(-botHeading) + axial * Math.cos(-botHeading);
@@ -110,6 +120,6 @@ public class DriveBase
         // Add data to the telemetry for displaying the current motor powers
         myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftRearPower, rightRearPower);
-        myOpMode.telemetry.addData("Heading",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        myOpMode.telemetry.addData("Heading",getHeading(AngleUnit.DEGREES));
     }
 }
