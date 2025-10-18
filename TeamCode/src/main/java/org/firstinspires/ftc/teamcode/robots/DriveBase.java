@@ -24,7 +24,6 @@ public class DriveBase
     protected DcMotor rightRearDrive = null;
 
     protected IMU imu = null;
-
     public DriveBase(LinearOpMode opMode, boolean isFC)
     {
         myOpMode = opMode;

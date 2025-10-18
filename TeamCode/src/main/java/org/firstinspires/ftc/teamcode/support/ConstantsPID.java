@@ -15,7 +15,7 @@ public class ConstantsPID
 
 
     // Constants dealing with moving side to side
-    public static double STRAFE_KP = 0.5;
+    public static double STRAFE_KP = 0.5;//0.5
     public static double STRAFE_KI = 0;
     public static double STRAFE_KD = 0;
     public static final double STRAFE_TOLERANCE = 0.5;
@@ -24,11 +24,11 @@ public class ConstantsPID
 
 
     // Constants dealing with turning
-    public static double YAW_KP = 0.5;
+    public static double YAW_KP = 0.5;//0.5
     public static double YAW_KI = 0;
     public static double YAW_KD = 0;
-    public static final double YAW_TOLERANCE = 1;
-    public static final double YAW_DEADBAND = 0.5;
+    public static final double YAW_TOLERANCE = 5;//1
+    public static final double YAW_DEADBAND = 2;
     public static final double YAW_MAX_AUTO = 0.8;
 
 }

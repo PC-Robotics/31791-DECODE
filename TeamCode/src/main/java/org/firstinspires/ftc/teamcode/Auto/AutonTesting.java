@@ -16,11 +16,15 @@ public class AutonTesting extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive())
+        if(opModeIsActive())
         {
-            robot.forward(24,.4, 100);
 
+            //robot.goToPosition(24, 0, 0, .5, 20);
+            robot.forward(24,.4, 10);
+            sleep(1000);
+            telemetry.addLine("Made past forward");
             //robot.turnTo(90, .2, 100);
+            telemetry.addLine("We made it past turn");
 
             //robot.forward(24, .2, 100);
 
@@ -30,5 +34,7 @@ public class AutonTesting extends LinearOpMode {
 
 
         }
+        telemetry.addLine("Auton Finished");
+        telemetry.update();
     }
 }
