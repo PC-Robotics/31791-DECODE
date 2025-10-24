@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,19 +14,23 @@ public class AutonTesting extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException
     {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         robot.init();
 
         waitForStart();
 
         if(opModeIsActive())
         {
+            //90 is turn to right
+            //robot.goToPosition(24, 24, 90, .5, 20);
 
-            //robot.goToPosition(24, 0, 0, .5, 20);
-            robot.forward(24,.4, 10);
+            robot.forward(48,.65, 5);
             sleep(1000);
             telemetry.addLine("Made past forward");
-            //robot.turnTo(90, .2, 100);
+            robot.turnTo(90, .5, 5);
             telemetry.addLine("We made it past turn");
+            robot.strafe(24, .5, 5);
 
             //robot.forward(24, .2, 100);
 

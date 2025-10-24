@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class ConstantsPID
 {
     // Constants dealing with moving forward and backward
-    public static double DRIVE_KP = 0.5;
+    public static double DRIVE_KP = 0.36;
     public static double DRIVE_KI = 0;
     public static double DRIVE_KD = 0;
     public static final double DRIVE_TOLERANCE = 0.5;
@@ -24,11 +24,11 @@ public class ConstantsPID
 
 
     // Constants dealing with turning
-    public static double YAW_KP = 0.5;//0.5
+    public static double YAW_KP = 0.1;//0.5
     public static double YAW_KI = 0;
     public static double YAW_KD = 0;
-    public static final double YAW_TOLERANCE = 5;//1
-    public static final double YAW_DEADBAND = 2;
+    public static final double YAW_TOLERANCE = 3;//1
+    public static final double YAW_DEADBAND = .25;
     public static final double YAW_MAX_AUTO = 0.8;
 
 }

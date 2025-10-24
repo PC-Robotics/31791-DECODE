@@ -35,6 +35,14 @@ public class DriveBasePID extends DriveBaseOdometry
     private PIDController strafeController = new PIDController(STRAFE_KP,STRAFE_KI,STRAFE_KD,STRAFE_MAX_AUTO,STRAFE_TOLERANCE,STRAFE_DEADBAND, false);
     private PIDController yawController = new PIDController(YAW_KP,YAW_KI,YAW_KD,YAW_MAX_AUTO,YAW_TOLERANCE,YAW_DEADBAND,true);
 
+    private double xPosition;
+    private double yPosition;
+    private double heading;
+
+    private double targetX;
+    private double targetY;
+    private double targetHeading;
+
     public DriveBasePID(LinearOpMode mode, boolean isFC)
     {
         super(mode,isFC);
@@ -43,27 +51,35 @@ public class DriveBasePID extends DriveBaseOdometry
     public void init()
     {
         super.init();
+
+        addLocationToTelemetry();
+        myOpMode.telemetry.update();
     }
 
     public void forward(double distanceInches, double power, double holdTime)
     {
-        double targetPosition = getXPosition(DistanceUnit.INCH)+distanceInches;
-        driveController.reset(targetPosition,power);
-        strafeController.reset(getYPosition(DistanceUnit.INCH));
-        yawController.reset(getHeading(AngleUnit.DEGREES));
+        targetX = getXPosition(DistanceUnit.INCH)+distanceInches;
+        targetY = getYPosition(DistanceUnit.INCH);
+        targetHeading = getHeading(AngleUnit.DEGREES);
+
+        driveController.reset(targetX,power);
+        strafeController.reset(targetY);
+        yawController.reset(targetHeading);
         holdTimer.reset();
 
         while (myOpMode.opModeIsActive())
         {
             updatePositionAndTelemetry();
 
-            double axial = driveController.getOutput(getXPosition(DistanceUnit.INCH));
-            double lateral = -strafeController.getOutput(getYPosition(DistanceUnit.INCH));
-            double yaw = -yawController.getOutput(getHeading(AngleUnit.DEGREES));
+            xPosition = getXPosition(DistanceUnit.INCH);
+            yPosition = getYPosition(DistanceUnit.INCH);
+            heading = getHeading(AngleUnit.DEGREES);
 
-            myOpMode.telemetry.addData("Axial:: ",axial);
-            myOpMode.telemetry.addData("Lateral:: ",lateral);
-            myOpMode.telemetry.addData("Yaw:: ",yaw);
+            double axial = driveController.getOutput(xPosition);
+            double lateral = -strafeController.getOutput(yPosition);
+            double yaw = -yawController.getOutput(heading);
+
+            addLocationToTelemetry();
 
             drive(axial,lateral,yaw,power);
 
@@ -90,10 +106,15 @@ public class DriveBasePID extends DriveBaseOdometry
 
         while (myOpMode.opModeIsActive())
         {
+            xPosition = getXPosition(DistanceUnit.INCH);
+            yPosition = getYPosition(DistanceUnit.INCH);
+            heading = getHeading(AngleUnit.DEGREES);
+
+            addLocationToTelemetry();
             updatePositionAndTelemetry();
 
-            drive(driveController.getOutput(getXPosition(DistanceUnit.INCH)),strafeController.getOutput(getYPosition(DistanceUnit.INCH)), yawController.getOutput(getHeading(AngleUnit.DEGREES)),power);
-
+            drive(driveController.getOutput(xPosition),strafeController.getOutput(yPosition), -yawController.getOutput(heading),power);
+            myOpMode.telemetry.update();
             if(strafeController.isInPosition() && yawController.isInPosition())
             {
                 if(holdTimer.time() > holdTime)  break;
@@ -106,15 +127,19 @@ public class DriveBasePID extends DriveBaseOdometry
         drive(0,0,0);
     }
 
-    public void turnTo(double headingRadians, double power, double holdTime)
+    public void turnTo(double headingDegrees, double power, double holdTime)
     {
-        yawController.reset(headingRadians,power);
+        yawController.reset(headingDegrees,power);
+
         while(myOpMode.opModeIsActive())
         {
+            heading = getHeading(AngleUnit.DEGREES);
+
+            addLocationToTelemetry();
             updatePositionAndTelemetry();
 
-            drive(0,0,yawController.getOutput(getHeading(AngleUnit.DEGREES)),power);
-
+            drive(0,0,-yawController.getOutput(heading),power);
+            myOpMode.telemetry.update();
             if(yawController.isInPosition())
             {
                 if(holdTimer.time() > holdTime) break;
@@ -138,7 +163,7 @@ public class DriveBasePID extends DriveBaseOdometry
         {
             updatePositionAndTelemetry();
 
-            drive(-driveController.getOutput(getXPosition(DistanceUnit.INCH)),-strafeController.getOutput(getYPosition(DistanceUnit.INCH)), yawController.getOutput(getHeading(AngleUnit.DEGREES)));
+            drive(driveController.getOutput(getXPosition(DistanceUnit.INCH)),-strafeController.getOutput(getYPosition(DistanceUnit.INCH)), -yawController.getOutput(getHeading(AngleUnit.DEGREES)));
 
             if(driveController.isInPosition() && strafeController.isInPosition() && yawController.isInPosition())
             {
@@ -150,5 +175,16 @@ public class DriveBasePID extends DriveBaseOdometry
         }
 
         drive(0,0,0);
+    }
+
+    public void addLocationToTelemetry()
+    {
+        myOpMode.telemetry.addData("X Position:: ",xPosition);
+        myOpMode.telemetry.addData("Y Position:: ",yPosition);
+        myOpMode.telemetry.addData("Heading:: ",heading);
+
+        myOpMode.telemetry.addData("X Target:: ",targetX);
+        myOpMode.telemetry.addData("Y Target:: ",targetY);
+        myOpMode.telemetry.addData("Heading Target:: ", targetHeading);
     }
 }

@@ -77,8 +77,6 @@ public class DriveBaseOdometry extends DriveBase
     {
         updatePosition();
         updateOdometryTelemetry();
-
-        myOpMode.telemetry.addLine("Look Mom, we made it!");
     }
 
     /**
