@@ -35,6 +35,11 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_HIGH_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_LOWER_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_MIN_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_TARGET_VELOCITY;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -73,10 +78,7 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1220;
-    final double LAUNCHER_MIN_VELOCITY = 1160;
-    final double LAUNCHER_HIGH_VELOCITY = 2000;
-    final double LAUNCHER_LOWER_VELOCITY = 1900;
+
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
@@ -114,7 +116,7 @@ public class StarterBotTeleopMecanums extends OpMode {
     }
 
     private LaunchState launchState;
-
+    private LaunchState launchStateHigh;
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftFrontPower;
     double rightFrontPower;
@@ -239,6 +241,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         launch(gamepad1.rightBumperWasPressed());
         launchMax(gamepad1.leftBumperWasPressed());
 
+
         /*
          * Show the state and motor powers
          */
@@ -311,10 +314,10 @@ public class StarterBotTeleopMecanums extends OpMode {
         }
     }
     void launchMax(boolean shotRequested) {
-        switch (launchState) {
+        switch (launchStateHigh) {
             case IDLE:
                 if (shotRequested) {
-                    launchState = LaunchState.SPIN_UP;
+                    launchStateHigh = LaunchState.SPIN_UP;
                 }
                 else if(StopTimer.seconds() > LAUNCHDURATION_SECONDS)
                 {
@@ -324,18 +327,18 @@ public class StarterBotTeleopMecanums extends OpMode {
             case SPIN_UP:
                 launcher.setVelocity(LAUNCHER_HIGH_VELOCITY);
                 if (launcher.getVelocity() > LAUNCHER_LOWER_VELOCITY) {
-                    launchState = LaunchState.LAUNCH;
+                    launchStateHigh = LaunchState.LAUNCH;
                 }
                 break;
             case LAUNCH:
                 leftFeeder.setPower(FULL_SPEED);
                 rightFeeder.setPower(FULL_SPEED);
                 feederTimer.reset();
-                launchState = LaunchState.LAUNCHING;
+                launchStateHigh = LaunchState.LAUNCHING;
                 break;
             case LAUNCHING:
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
-                    launchState = LaunchState.IDLE;
+                    launchStateHigh = LaunchState.IDLE;
                     StopTimer.reset();
                     leftFeeder.setPower(STOP_SPEED);
                     rightFeeder.setPower(STOP_SPEED);

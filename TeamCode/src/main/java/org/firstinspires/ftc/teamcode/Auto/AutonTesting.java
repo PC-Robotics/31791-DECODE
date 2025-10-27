@@ -22,15 +22,14 @@ public class AutonTesting extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            //90 is turn to right
-            //robot.goToPosition(24, 24, 90, .5, 20);
 
-            robot.forward(48,.65, 5);
-            sleep(1000);
+            robot.goToPosition(24, 48, 90, .5, 20);
+
+            //robot.forward(24,.65, 5);
             telemetry.addLine("Made past forward");
-            robot.turnTo(90, .5, 5);
+            //robot.turnTo(90, .5, 5);
             telemetry.addLine("We made it past turn");
-            robot.strafe(24, .5, 5);
+            //robot.strafe(24, .5, 5);
 
             //robot.forward(24, .2, 100);
 

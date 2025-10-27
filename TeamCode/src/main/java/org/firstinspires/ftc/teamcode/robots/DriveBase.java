@@ -125,4 +125,11 @@ public class DriveBase
         myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftRearPower, rightRearPower);
         myOpMode.telemetry.addData("Heading",getHeading(AngleUnit.DEGREES));
     }
+
+    public void toggleFC(){
+        if(fieldCentric) fieldCentric = false;
+
+        else fieldCentric = true;
+
+    }
 }
