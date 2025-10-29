@@ -96,15 +96,15 @@ public class DriveBase
         double max;
 
         // This conversion is based on gmZero.org code
-        /*if(fieldCentric)
+        if(fieldCentric)
         {
-            double botHeading = getHeading();
+            double botHeading = getHeading(AngleUnit.DEGREES);
 
             double rotX = lateral * Math.cos(-botHeading) - axial * Math.sin(-botHeading);
             axial = lateral * Math.sin(-botHeading) + axial * Math.cos(-botHeading);
 
             lateral = rotX;
-        }*/
+        }
 
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -126,6 +126,8 @@ public class DriveBase
         myOpMode.telemetry.addData("Heading",getHeading(AngleUnit.DEGREES));
     }
 
+
+    /**  For toggling FC  **/
     public void toggleFC(){
         if(fieldCentric) fieldCentric = false;
 
