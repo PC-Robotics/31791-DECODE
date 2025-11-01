@@ -182,7 +182,19 @@ public class DriveBasePID extends DriveBaseOdometry
         {
             updatePositionAndTelemetry();
 
-            drive(-driveController.getOutput(getYPosition(DistanceUnit.INCH)),-strafeController.getOutput(getXPosition(DistanceUnit.INCH)), yawController.getOutput(getHeading(AngleUnit.DEGREES)));
+            double xDistance = xLocation - getXPosition(DistanceUnit.INCH);
+            double yDistance = yLocation - getYPosition(DistanceUnit.INCH);
+
+            double negativeRadianHeading = -getHeading(AngleUnit.RADIANS);
+
+            double rotatedX = xDistance * Math.cos(negativeRadianHeading) - yDistance * Math.sin(negativeRadianHeading);
+            double rotatedY = xDistance * Math.sin(negativeRadianHeading) + yDistance * Math.cos(negativeRadianHeading);
+
+            double axialPower = driveController.getOutputFromError(rotatedX);
+            double lateralPower = strafeController.getOutputFromError(rotatedY);
+            double yawPower = yawController.getOutput(getHeading(AngleUnit.DEGREES));
+
+            drive(axialPower,-lateralPower, -yawPower);
 
             myOpMode.telemetry.update();
 

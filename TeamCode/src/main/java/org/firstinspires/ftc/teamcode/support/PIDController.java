@@ -77,6 +77,34 @@ public class PIDController {
         return setPoint;
     }
 
+    public double getOutputFromError(double error)
+    {
+        double output;
+
+        if(Math.abs(error) < deadband)
+        {
+            output = 0;
+        }
+        else {
+            if (circular) {
+                while (error > 180) error -= 360;
+                while (error <= -180) error += 360;
+            }
+
+            integralSum += error * cycleTime.seconds();
+            double derivative = (error - lastError) / cycleTime.seconds();
+            lastError = error;
+
+            output = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
+        }
+
+        cycleTime.reset();
+
+        inPosition = (Math.abs(error) < tolerance);
+
+        return Range.clip(output,-liveOutputLimit,liveOutputLimit);
+    }
+
     public void reset(double setPoint, double powerLimit)
     {
         this.setPoint = setPoint;

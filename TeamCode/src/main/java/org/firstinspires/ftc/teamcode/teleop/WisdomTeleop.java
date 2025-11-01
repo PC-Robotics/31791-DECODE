@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
 
+@TeleOp(name = "WisdomTeleop", group = "StarterBot")
 public class WisdomTeleop extends LinearOpMode {
     WisdomBot robot = new WisdomBot(this, true);
 
@@ -31,7 +33,7 @@ public class WisdomTeleop extends LinearOpMode {
         double lateral = gamepad1.left_stick_x;
         double yaw = gamepad1.right_stick_x;
 
-        robot.drive(axial,lateral,yaw);
+        robot.drive(axial,lateral,yaw, 0.7);
 
         robot.launch(gamepad1.rightBumperWasPressed());
         robot.launchHigh(gamepad1.leftBumperWasPressed());

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robots;
 
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -58,6 +60,13 @@ public class DriveBase
         leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
         rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
 
+
+        leftFrontDrive.setZeroPowerBehavior(BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(BRAKE);
+        leftRearDrive.setZeroPowerBehavior(BRAKE);
+        rightRearDrive.setZeroPowerBehavior(BRAKE);
+
+
         setupOdometry();
 
         myOpMode.telemetry.addData("Status","Initialized");
@@ -93,38 +102,36 @@ public class DriveBase
      */
     public void drive(double axial, double lateral, double yaw, double power)
     {
-        double max;
+        // Convert to field-centric if enabled
+        if (fieldCentric) {
+            double botHeading = -getHeading(AngleUnit.RADIANS);
 
-        // This conversion is based on gmZero.org code
-        if(fieldCentric)
-        {
-            double botHeading = getHeading(AngleUnit.DEGREES);
+            double rotatedX = lateral * Math.cos(botHeading) - axial * Math.sin(botHeading);
+            double rotatedY = lateral * Math.sin(botHeading) + axial * Math.cos(botHeading);
 
-            double rotX = lateral * Math.cos(-botHeading) - axial * Math.sin(-botHeading);
-            axial = lateral * Math.sin(-botHeading) + axial * Math.cos(-botHeading);
-
-            lateral = rotX;
+            lateral = rotatedX;
+            axial = rotatedY;
         }
 
-        // Combine the joystick requests for each axis-motion to determine each wheel's power.
-        // Set up a variable for each drive wheel to save the power level for telemetry.
-        double denominator = Math.max(Math.abs(axial)+Math.abs(lateral)+Math.abs(yaw),1);
-        double leftFrontPower  = (axial + lateral + yaw)/denominator;
-        double leftRearPower   = (axial - lateral + yaw)/denominator;
-        double rightFrontPower = (axial - lateral - yaw)/denominator;
-        double rightRearPower  = (axial + lateral - yaw)/denominator;
+        // Normalize powers
+        double denominator = Math.max(Math.abs(axial) + Math.abs(lateral) + Math.abs(yaw), 1);
+        double leftFrontPower  = (axial + lateral + yaw) / denominator;
+        double rightFrontPower = (axial - lateral - yaw) / denominator;
+        double leftRearPower   = (axial - lateral + yaw) / denominator;
+        double rightRearPower  = (axial + lateral - yaw) / denominator;
 
-        // Apply the power to the motors
-        leftFrontDrive.setPower(leftFrontPower*power);
-        leftRearDrive.setPower(leftRearPower*power);
-        rightFrontDrive.setPower(rightFrontPower*power);
-        rightRearDrive.setPower(rightRearPower*power);
+        // Apply scaled power
+        leftFrontDrive.setPower(leftFrontPower * power);
+        leftRearDrive.setPower(leftRearPower * power);
+        rightFrontDrive.setPower(rightFrontPower * power);
+        rightRearDrive.setPower(rightRearPower * power);
 
-        // Add data to the telemetry for displaying the current motor powers
+        // Telemetry
         myOpMode.telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         myOpMode.telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftRearPower, rightRearPower);
-        myOpMode.telemetry.addData("Heading",getHeading(AngleUnit.DEGREES));
+        myOpMode.telemetry.addData("Heading", getHeading(AngleUnit.DEGREES));
     }
+
 
 
     /**  For toggling FC  **/

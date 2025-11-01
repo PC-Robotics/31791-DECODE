@@ -115,8 +115,9 @@ public class StarterBotTeleopMecanums extends OpMode {
         LAUNCHING,
     }
 
+
     private LaunchState launchState;
-    private LaunchState launchStateHigh;
+
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftFrontPower;
     double rightFrontPower;
@@ -129,6 +130,7 @@ public class StarterBotTeleopMecanums extends OpMode {
     @Override
     public void init() {
         launchState = LaunchState.IDLE;
+
 
         /*
          * Initialize the hardware variables. Note that the strings used here as parameters
@@ -239,7 +241,7 @@ public class StarterBotTeleopMecanums extends OpMode {
          * Now we call our "Launch" function.
          */
         launch(gamepad1.rightBumperWasPressed());
-        launchMax(gamepad1.leftBumperWasPressed());
+
 
 
         /*
@@ -313,37 +315,6 @@ public class StarterBotTeleopMecanums extends OpMode {
                 break;
         }
     }
-    void launchMax(boolean shotRequested) {
-        switch (launchStateHigh) {
-            case IDLE:
-                if (shotRequested) {
-                    launchStateHigh = LaunchState.SPIN_UP;
-                }
-                else if(StopTimer.seconds() > LAUNCHDURATION_SECONDS)
-                {
-                    launcher.setVelocity(0);
-                }
-                break;
-            case SPIN_UP:
-                launcher.setVelocity(LAUNCHER_HIGH_VELOCITY);
-                if (launcher.getVelocity() > LAUNCHER_LOWER_VELOCITY) {
-                    launchStateHigh = LaunchState.LAUNCH;
-                }
-                break;
-            case LAUNCH:
-                leftFeeder.setPower(FULL_SPEED);
-                rightFeeder.setPower(FULL_SPEED);
-                feederTimer.reset();
-                launchStateHigh = LaunchState.LAUNCHING;
-                break;
-            case LAUNCHING:
-                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
-                    launchStateHigh = LaunchState.IDLE;
-                    StopTimer.reset();
-                    leftFeeder.setPower(STOP_SPEED);
-                    rightFeeder.setPower(STOP_SPEED);
-                }
-                break;
-        }
+
+
     }
-}

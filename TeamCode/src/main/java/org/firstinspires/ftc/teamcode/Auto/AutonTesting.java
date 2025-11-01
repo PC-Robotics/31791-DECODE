@@ -23,7 +23,7 @@ public class AutonTesting extends LinearOpMode {
         if(opModeIsActive())
         {
 
-            robot.goToPosition(24, 48, 90, .5, 20);
+            robot.goToPosition(0, 18, 0, .5, 2);
 
             //robot.forward(24,.65, 5);
             telemetry.addLine("Made past forward");

@@ -44,7 +44,8 @@ public class WisdomBot extends DriveBasePID {
         IDLE,
         SPIN_UP,
         LAUNCH,
-        LAUNCHING
+        LAUNCHING,
+        OTHERLAUNCHING
     }
 
     private LaunchState launchState = LaunchState.IDLE;
@@ -57,9 +58,9 @@ public class WisdomBot extends DriveBasePID {
     /** Initialize all launcher + feeder hardware **/
     public void init() {
 
-        launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-        leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
-        rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
+        launcher = myOpMode.hardwareMap.get(DcMotorEx.class, "launcher");
+        leftFeeder = myOpMode.hardwareMap.get(CRServo.class, "left_feeder");
+        rightFeeder = myOpMode.hardwareMap.get(CRServo.class, "right_feeder");
 
         launcher.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         launcher.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -75,9 +76,11 @@ public class WisdomBot extends DriveBasePID {
     /** Regular launch (medium velocity) **/
     public void launch(boolean shotRequested) {
         switch (launchState) {
+            case OTHERLAUNCHING: break;
             case IDLE:
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
+                    launchStateHigh = LaunchState.OTHERLAUNCHING;
                 } else if (stopTimer.seconds() > LAUNCH_DURATION_SECONDS) {
                     launcher.setVelocity(0);
                 }
@@ -100,6 +103,7 @@ public class WisdomBot extends DriveBasePID {
             case LAUNCHING:
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
                     launchState = LaunchState.IDLE;
+                    launchStateHigh = LaunchState.IDLE;
                     stopTimer.reset();
                     leftFeeder.setPower(STOP_SPEED);
                     rightFeeder.setPower(STOP_SPEED);
@@ -108,12 +112,59 @@ public class WisdomBot extends DriveBasePID {
         }
     }
 
+
+
+    public void autoLaunch(int wantValue, int minValue) {
+        int count = 0;
+
+        while (count < 3) {
+            // Step 1: Spin up launcher
+            launcher.setVelocity(wantValue);
+            while (launcher.getVelocity() < minValue) {
+                // Busy wait until launcher reaches target speed
+                // Add a small delay
+                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+
+            // Step 2: Feed the flyWheel
+            leftFeeder.setPower(FULL_SPEED);
+            rightFeeder.setPower(FULL_SPEED);
+            feederTimer.reset();
+
+            while (feederTimer.seconds() < 0.4) {
+                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+
+            // Stop feeder between shots
+            leftFeeder.setPower(STOP_SPEED);
+            rightFeeder.setPower(STOP_SPEED);
+
+            // delay between shots
+            stopTimer.reset();
+            while (stopTimer.seconds() < 0.5) {
+                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+
+            count++;
+        }
+
+        // Step 4: Turn off launcher
+        launcher.setVelocity(0);
+    }
+
+
+
+
     /** High launch (high velocity) **/
+
     public void launchHigh(boolean shotRequested) {
         switch (launchStateHigh) {
+            case OTHERLAUNCHING: break;
+
             case IDLE:
                 if (shotRequested) {
                     launchStateHigh = LaunchState.SPIN_UP;
+                    launchState = LaunchState.OTHERLAUNCHING;
                 } else if (stopTimer.seconds() > LAUNCH_DURATION_SECONDS) {
                     launcher.setVelocity(0);
                 }
@@ -136,6 +187,7 @@ public class WisdomBot extends DriveBasePID {
             case LAUNCHING:
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
                     launchStateHigh = LaunchState.IDLE;
+                    launchState = LaunchState.IDLE;
                     stopTimer.reset();
                     leftFeeder.setPower(STOP_SPEED);
                     rightFeeder.setPower(STOP_SPEED);
