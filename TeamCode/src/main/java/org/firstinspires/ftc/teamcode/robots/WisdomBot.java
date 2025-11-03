@@ -123,7 +123,7 @@ public class WisdomBot extends DriveBasePID {
             while (launcher.getVelocity() < minValue) {
                 // Busy wait until launcher reaches target speed
                 // Add a small delay
-                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             }
 
             // Step 2: Feed the flyWheel
@@ -132,7 +132,7 @@ public class WisdomBot extends DriveBasePID {
             feederTimer.reset();
 
             while (feederTimer.seconds() < 0.4) {
-                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             }
 
             // Stop feeder between shots
@@ -142,7 +142,7 @@ public class WisdomBot extends DriveBasePID {
             // delay between shots
             stopTimer.reset();
             while (stopTimer.seconds() < 0.5) {
-                try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             }
 
             count++;

@@ -22,10 +22,11 @@ public class AutonRed extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            Red.forward(28, 0.6, 2);
+            Red.forward(48, 0.6, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
             Red.autoLaunch(1500, 1400);
-            Red.goToPosition(24, 24, 0, 0.3, 2);
+            Red.goToPosition(24, 48 , 0, 0.3, 2);
+            Red.turnTo(-135, 0.5, 2);
 
 
         }

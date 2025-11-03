@@ -22,10 +22,11 @@ public class AutonBlue extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            Blue.forward(28, 0.6, 2);
+            Blue.forward(48, 0.6, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
             Blue.autoLaunch(1500, 1400);
-            Blue.goToPosition(-24, 24, 0, 0.3, 2);
+            Blue.goToPosition(-24, 48, 0, 0.3, 2);
+            Blue.turnTo(135,0.5,2);
 
 
         }

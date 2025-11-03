@@ -23,7 +23,8 @@ public class AutoFar extends LinearOpMode {
         {
 
             //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Far.autoLaunch(2200, 2100);
+            Far.forward(-8, 0.5, 1);
+            Far.autoLaunch(2050, 2000);
             Far.forward(-28, 0.6, 2);
 
 
