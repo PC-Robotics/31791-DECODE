@@ -40,6 +40,7 @@ import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_LOWER
 import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_MIN_VELOCITY;
 import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_TARGET_VELOCITY;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -63,7 +64,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Since the dynamics of a launcher wheel system varies greatly from those of most other FTC mechanisms,
  * we will also need to adjust the "PIDF" coefficients with some that are a better fit for our application.
  */
-
+@Disabled
 @TeleOp(name = "CarterTest", group = "StarterBot")
 //@Disabled
 public class StarterBotTeleopMecanums extends OpMode {

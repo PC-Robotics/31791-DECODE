@@ -36,6 +36,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -62,7 +63,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * it will move forward in the enum. This allows us to run the autonomous period inside of our
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
-
+@Disabled
 @Autonomous(name="StarterBotAutoRed", group="StarterBot")
 //@Disabled
 public class StarterBotAutoRed extends OpMode
