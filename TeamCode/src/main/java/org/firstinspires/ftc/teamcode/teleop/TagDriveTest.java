@@ -1,0 +1,59 @@
+package org.firstinspires.ftc.teamcode.teleop;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
+import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
+import org.firstinspires.ftc.teamcode.robots.WisdomBot;
+
+@TeleOp(name = "Tag Drive Test", group = "Test")
+public class TagDriveTest extends LinearOpMode {
+    AprilTagVision robot = new AprilTagVision(this, false);
+
+    @Override
+    public void runOpMode(){
+        robot.init();
+        telemetry.addLine("Ready - Press Start");
+        telemetry.update();
+        waitForStart();
+        while(opModeIsActive()){
+            robot.update();
+            double Dist = robot.getTagDistance();
+            double Angle = robot.getTagAngle();
+
+            telemetry.addData("April Tag Distance  ::  ", Dist );
+            telemetry.addData("April Tag Angle  ::  ", Angle);
+
+            gamepad1Controls();
+
+            telemetry.update();
+        }
+
+    }
+
+    public void gamepad1Controls(){
+        double axial = -gamepad1.left_stick_y;   // Forward on left stick yields negative val
+        double lateral = gamepad1.left_stick_x;
+        double yaw = gamepad1.right_stick_x;
+
+        robot.drive(axial,lateral,yaw, 0.92);
+
+        robot.launch(gamepad1.rightBumperWasPressed());
+        robot.launchHigh(gamepad1.leftBumperWasPressed());
+        if(gamepad1.right_trigger > 0.5){
+            robot.autoLaunch(1450, 1400);
+        }
+        if(gamepad1.left_trigger > 0.5){
+            robot.autoLaunch(2050, 2000);
+        }
+        if(gamepad1.dpad_up){
+            robot.stopLauncher();
+        }
+        if(gamepad1.start){
+            robot.toggleFC();
+        }
+    }
+
+}
+

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.support.ConstantsPID;
 
 public class WisdomBot extends DriveBasePID {
+
     private DcMotorEx launcher;
     private CRServo leftFeeder;
     private CRServo rightFeeder;
@@ -69,6 +70,7 @@ public class WisdomBot extends DriveBasePID {
         leftFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
+
 
         super.init();
     }
@@ -202,5 +204,8 @@ public class WisdomBot extends DriveBasePID {
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
     }
+
+
+
 
 }
