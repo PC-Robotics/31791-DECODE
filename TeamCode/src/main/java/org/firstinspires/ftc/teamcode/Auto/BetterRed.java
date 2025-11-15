@@ -5,33 +5,37 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
 
-@Disabled
-@Autonomous(name = "Auto Red Side")
-public class AutonRed extends LinearOpMode {
+@Autonomous(name = "Red Auton Side")
+public class BetterRed extends LinearOpMode {
 
-    WisdomBot Red = new WisdomBot(this, false);
+    AprilTagVision Red = new AprilTagVision(this, false);
 
-    public void runOpMode() throws InterruptedException{
+
+    public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Red.init();
 
+
         waitForStart();
 
-        if(opModeIsActive())
-        {
-            Red.forward(48, 0.6, 2);
-            //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Red.autoLaunch(1500, 1400);
-            Red.goToPosition(24, 48 , 0, 0.3, 2);
-            Red.turnTo(-135, 0.5, 2);
+        if (opModeIsActive()) {
+
+            Red.goToPosition(0, 56, 0, 0.6, 0.5);
+
+            //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
+
+            Red.autoLaunch(1540, 1550);
+
+            Red.goToPosition(-24, 56, 0, 0.6, 0.5);
 
 
         }
-
     }
+
 }

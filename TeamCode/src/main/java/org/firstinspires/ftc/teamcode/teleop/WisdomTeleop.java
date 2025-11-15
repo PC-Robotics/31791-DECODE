@@ -1,31 +1,43 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
-
-@TeleOp(name = "WisdomTeleop", group = "StarterBot")
+@Disabled
+@TeleOp(name = "WisdomTeleop", group = "Test")
 public class WisdomTeleop extends LinearOpMode {
-    WisdomBot robot = new WisdomBot(this, false);
+    AprilTagVision robot = new AprilTagVision(this, false);
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         robot.init();
 
-        robot.resetPositionAndOdometry();
-
+        telemetry.addLine("Ready - Press Start");
+        telemetry.update();
         waitForStart();
-
         while(opModeIsActive()){
-            robot.updatePositionAndTelemetry();
+            robot.update();
+            double Dist = robot.getTagDistance();
+            double Angle = robot.getTagAngle();
+            double Velocity = robot.getVelocity2();
+
+            telemetry.addData("April Tag Distance  ::  ", Dist );
+            telemetry.addData("April Tag Angle  ::  ", Angle);
+            telemetry.addData("Launcher Velocity ::  " , Velocity);
 
             gamepad1Controls();
 
-
             telemetry.update();
         }
+
     }
 
     public void gamepad1Controls(){
@@ -38,7 +50,7 @@ public class WisdomTeleop extends LinearOpMode {
         robot.launch(gamepad1.rightBumperWasPressed());
         robot.launchHigh(gamepad1.leftBumperWasPressed());
         if(gamepad1.right_trigger > 0.5){
-            robot.autoLaunch(1450, 1400);
+            robot.autoLaunch(1600, 1600);
         }
         if(gamepad1.left_trigger > 0.5){
             robot.autoLaunch(2050, 2000);
@@ -46,9 +58,10 @@ public class WisdomTeleop extends LinearOpMode {
         if(gamepad1.dpad_up){
             robot.stopLauncher();
         }
-        if(gamepad1.start){
+        if(gamepad1.startWasPressed()){
             robot.toggleFC();
         }
     }
 
 }
+

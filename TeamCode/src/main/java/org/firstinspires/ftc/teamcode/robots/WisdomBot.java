@@ -119,13 +119,14 @@ public class WisdomBot extends DriveBasePID {
     public void autoLaunch(int wantValue, int minValue) {
         int count = 0;
 
-        while (count < 3) {
+        while (myOpMode.opModeIsActive() && count < 3) {
             // Step 1: Spin up launcher
             launcher.setVelocity(wantValue);
-            while (launcher.getVelocity() < minValue) {
+            while (myOpMode.opModeIsActive() && launcher.getVelocity() < minValue) {
                 // Busy wait until launcher reaches target speed
                 // Add a small delay
-                try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                try { Thread.sleep(1); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+
             }
 
             // Step 2: Feed the flyWheel
@@ -155,7 +156,7 @@ public class WisdomBot extends DriveBasePID {
     }
 
 
-
+    public double getVelocity2() { return launcher.getVelocity(); }
 
     /** High launch (high velocity) **/
 

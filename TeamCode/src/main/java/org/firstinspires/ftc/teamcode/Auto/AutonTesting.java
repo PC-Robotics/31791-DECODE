@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
-
+@Disabled
 @Autonomous(name = "Autonomous Testing")
 public class AutonTesting extends LinearOpMode {
 
@@ -23,7 +24,7 @@ public class AutonTesting extends LinearOpMode {
         if(opModeIsActive())
         {
 
-            robot.goToPosition(0, 18, 0, .5, 2);
+            robot.goToPosition(-32, 48, -180, .5, 2);
 
             //robot.forward(24,.65, 5);
             telemetry.addLine("Made past forward");
