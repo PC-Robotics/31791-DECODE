@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -16,8 +17,14 @@ public class AprilTagVision extends WisdomBot {
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
 
+
+
     private double lastRange = Double.NaN;
     private double lastBearing = Double.NaN;
+
+    private double lastTagFieldX = Double.NaN;
+    private double lastTagFieldY = Double.NaN;
+    private double lastTagFieldYaw = Double.NaN;
     private int lastTagID = -1;
 
 
@@ -40,96 +47,120 @@ public class AprilTagVision extends WisdomBot {
         if (aprilTag == null) return;
 
         List<AprilTagDetection> detections = aprilTag.getDetections();
+
         if (detections.isEmpty()) {
             lastTagID = -1;
+            lastRange = Double.NaN;
+            lastBearing = Double.NaN;
+            lastTagFieldX = Double.NaN;
+            lastTagFieldY = Double.NaN;
+            lastTagFieldYaw = Double.NaN;
             return;
         }
 
-        AprilTagDetection tag = detections.get(0); // just take the first one
+        // Just use the first detected tag
+        AprilTagDetection tag = detections.get(0);
         lastTagID = tag.id;
 
+        // ----------------------------------------------
+        // If FTC Pose is available (VisionPortal)
+        // ----------------------------------------------
         if (tag.ftcPose != null) {
-            lastRange = tag.ftcPose.range;     // distance from camera
-            lastBearing = tag.ftcPose.bearing; // horizontal angle
-        } else if (tag.robotPose != null) {
-            double x = tag.robotPose.getPosition().x;
-            double y = tag.robotPose.getPosition().y;
-            lastRange = Math.sqrt(x * x + y * y);
-            lastBearing = Math.toDegrees(Math.atan2(x, y));
+
+            // Robot-relative pose
+            lastRange   = tag.ftcPose.range;     // inches
+            lastBearing = tag.ftcPose.bearing;   // degrees
+
+            // Field-relative pose
+            lastTagFieldX = tag.ftcPose.x;       // inches
+            lastTagFieldY = tag.ftcPose.y;       // inches
+            lastTagFieldYaw = tag.ftcPose.yaw;   // degrees
         }
 
-        myOpMode.telemetry.addLine(String.format("Tag %d Range=%.2f Bearing=%.2f",
-                lastTagID, lastRange, lastBearing));
+        // ----------------------------------------------
+        // Fallback if robotPose is used (rare)
+        // ----------------------------------------------
+        else if (tag.robotPose != null) {
+
+            double x = tag.robotPose.getPosition().x;  // meters
+            double y = tag.robotPose.getPosition().y;  // meters
+
+            // Convert meters → inches
+            double xi = x * 39.37;
+            double yi = y * 39.37;
+
+            lastRange = Math.sqrt(xi*xi + yi*yi);
+            lastBearing = Math.toDegrees(Math.atan2(xi, yi));
+
+            // FIELD ESTIMATES — robotPose is NOT field coords
+            lastTagFieldX = Double.NaN;
+            lastTagFieldY = Double.NaN;
+            lastTagFieldYaw = Double.NaN;
+        }
+
+        // Telemetry for debugging
+        myOpMode.telemetry.addLine(
+                String.format("Tag %d  Range=%.1f  Bearing=%.1f  Field(%.1f, %.1f, %.1f°)",
+                        lastTagID,
+                        lastRange,
+                        lastBearing,
+                        lastTagFieldX,
+                        lastTagFieldY,
+                        lastTagFieldYaw
+                )
+        );
     }
 
 
-    public void alignToTag(double targetDistance, double targetAngle, double minDist, double minAngle, double minStrafe, double movePower) {
+    public void alignToTagNonBlocking(double desiredDistance, double desiredAngleFromTag, double movePower) {
+
         update();
-        if (getTagID() == -1) {
-            myOpMode.telemetry.addLine("No AprilTag detected!");
-            myOpMode.telemetry.update();
+
+        if(getTagID() == -1) {
+            // No tag, stop
+            drive(0,0,0);
             return;
         }
 
-            myOpMode.telemetry.addLine("Starting vision alignment with goToPosition...");
-            myOpMode.telemetry.update();
+        // Get the tag's field pose
+        double tagX = getTagFieldX();
+        double tagY = getTagFieldY();
+        double tagYaw = getTagFieldHeading(); // degrees
 
-            // Tolerances
-            double distanceTolerance = 0.6; // inches
-            double angleTolerance = 5;    // degrees
-            double strafeTolerance = 0.6;   // optional, if you want to center laterally
-
-            while (myOpMode.opModeIsActive() && getTagID() != -1) {
-                update(); // refresh tag info
-
-                double distance = getTagDistance();
-                double angle = getTagAngle();
-
-                if (Double.isNaN(distance) || Double.isNaN(angle)) continue;
-
-                // Compute error values
-                double distanceError = distance + targetDistance;   // forward/backward
-                double angleError = angle - targetAngle;           // rotation
-                double strafeError = 0;                             // optional lateral offset if available
-
-                boolean distanceAligned = Math.abs(distanceError) <= distanceTolerance;
-                boolean angleAligned = Math.abs(angleError) <= angleTolerance;
-                boolean strafeAligned = Math.abs(strafeError) <= strafeTolerance;
-
-                // Stop if everything is within tolerances
-                if (distanceAligned && angleAligned && strafeAligned) {
-                    myOpMode.telemetry.addLine("Fully aligned with AprilTag!");
-                    myOpMode.telemetry.update();
-                    break;
-                }
-
-                // Compute target relative positions
-                double currentX = getXPosition(DistanceUnit.INCH);
-                double currentY = getYPosition(DistanceUnit.INCH);
-                double targetX = currentX + strafeError;          // lateral offset
-                double targetY = currentY + distanceError;        // forward/backward offset
-                double targetHeading = getHeading(AngleUnit.DEGREES) - angleError;
-
-                // Use goToPosition with very small holdTime for continuous adjustment
-                goToPosition(-6, 89, targetHeading, 0.3, 0.05);
-
-                // Telemetry
-                myOpMode.telemetry.addData("Distance", "%.2f", distance);
-                myOpMode.telemetry.addData("Angle", "%.2f", angle);
-                myOpMode.telemetry.addData("Distance Error", "%.2f", distanceError);
-                myOpMode.telemetry.addData("Angle Error", "%.2f", angleError);
-                myOpMode.telemetry.update();
-
-                myOpMode.sleep(30); // short pause for smoother loop
-            }
-
-            // stop motors at the end
-            drive(0, 0, 0);
+        if(Double.isNaN(tagX) || Double.isNaN(tagY) || Double.isNaN(tagYaw)) {
+            // tag field pose not valid yet
+            return;
         }
+
+        // Desired robot heading
+        double desiredHeading = tagYaw + desiredAngleFromTag;
+
+        // Offset in inches from tag
+        double offsetX = desiredDistance * Math.sin(Math.toRadians(desiredHeading));
+        double offsetY = desiredDistance * Math.cos(Math.toRadians(desiredHeading));
+
+        // Absolute field target
+        double targetX = tagX - offsetX;
+        double targetY = tagY - offsetY;
+
+        // Move toward target
+        goToPositionNonBlocking(targetY, targetX, desiredHeading, movePower);
+    }
 
 
     public double getTagDistance() { return lastRange; }
     public double getTagAngle() { return lastBearing; }
+    public double getTagFieldX() {
+        return lastTagFieldX;
+    }
+
+    public double getTagFieldY() {
+        return lastTagFieldY;
+    }
+
+    public double getTagFieldHeading() {   // yaw
+        return lastTagFieldYaw;
+    }
 
     public int getTagID() { return lastTagID; }
 

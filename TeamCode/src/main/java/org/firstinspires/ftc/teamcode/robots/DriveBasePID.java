@@ -210,6 +210,27 @@ public class DriveBasePID extends DriveBaseOdometry
         drive(0,0,0);
     }
 
+    public void goToPositionNonBlocking(double yLocation, double xLocation, double headingDegree, double power) {
+        updatePositionAndTelemetry();
+
+        double xDistance = xLocation - getXPosition(DistanceUnit.INCH);
+        double yDistance = yLocation - getYPosition(DistanceUnit.INCH);
+
+        double negativeRadianHeading = -getHeading(AngleUnit.RADIANS);
+
+        double rotatedX = xDistance * Math.cos(negativeRadianHeading) - yDistance * Math.sin(negativeRadianHeading);
+        double rotatedY = xDistance * Math.sin(negativeRadianHeading) + yDistance * Math.cos(negativeRadianHeading);
+
+        double axialPower = driveController.getOutputFromError(rotatedX);
+        double lateralPower = strafeController.getOutputFromError(rotatedY);
+        double yawPower = yawController.getOutput(headingDegree);
+
+        drive(axialPower, -lateralPower, -yawPower);
+
+        //myOpMode.telemetry.update();
+    }
+
+
     public void addLocationToTelemetry()
     {
         myOpMode.telemetry.addData("X Position:: ",xPosition);
@@ -219,5 +240,16 @@ public class DriveBasePID extends DriveBaseOdometry
         myOpMode.telemetry.addData("X Target:: ",targetX);
         myOpMode.telemetry.addData("Y Target:: ",targetY);
         myOpMode.telemetry.addData("Heading Target:: ", targetHeading);
+    }
+
+    public void setLockHeading(double targetHeading){
+        yawController.reset(targetHeading);
+    }
+
+    public void setLockX(double targetX){
+        driveController.reset(targetX);
+    }
+    public void setLockY(double targetY){
+        strafeController.reset(targetY);
     }
 }

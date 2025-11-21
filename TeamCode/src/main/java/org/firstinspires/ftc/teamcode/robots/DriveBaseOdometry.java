@@ -16,6 +16,10 @@ public class DriveBaseOdometry extends DriveBase
 
     private Pose2D robotPosition;
 
+    public static Pose2D savedPose = null;
+
+
+
     public DriveBaseOdometry(LinearOpMode opMode, boolean isFC)
     {
         super(opMode, isFC);
@@ -64,6 +68,13 @@ public class DriveBaseOdometry extends DriveBase
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         resetPositionAndOdometry();
+
+        Pose2D temp = new Pose2D(DistanceUnit.INCH, -46.5748, -23.70079, AngleUnit.DEGREES,0 );
+
+        odo.getPosition();
+
+
+
 
         myOpMode.telemetry.addData("X offset", odo.getXOffset());
         myOpMode.telemetry.addData("Y offset", odo.getYOffset());
@@ -147,5 +158,15 @@ public class DriveBaseOdometry extends DriveBase
     public double getHeading(AngleUnit unit)
     {
         return robotPosition.getHeading(unit);
+    }
+
+    public void saveCurrentPose(){
+        savedPose = getRobotPosition();
+    }
+
+    public void restoreSavedPoseIfAvailable() {
+        if (savedPose != null) {
+            setRobotPosition(savedPose);
+        }
     }
 }

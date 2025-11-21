@@ -35,8 +35,11 @@ public class BlueAutoFar extends LinearOpMode {
 
             FarBlue.goToPosition(28,3, 0, 0.5, 0.5);
 
+            FarBlue.saveCurrentPose();
 
         }
     }
+
+
 
 }
