@@ -3,32 +3,28 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
+@Autonomous(name = "Far Shot Red")
+public class RedFarAuto extends LinearOpMode {
 
-@Disabled
-@Autonomous(name = "Auto Red Side")
-public class AutonRed extends LinearOpMode {
-
-    WisdomBot Red = new WisdomBot(this, false);
+    WisdomBot Blue = new WisdomBot(this, false);
 
     public void runOpMode() throws InterruptedException{
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Red.init();
-
+        Blue.init();
         waitForStart();
 
         if(opModeIsActive())
         {
-            Red.forward(48, 0.6, 2);
+            Blue.goToPosition(5, -4, -16.6, 0.5, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Red.autoLaunch(1500, 1400);
-            Red.goToPosition(24, 48 , 0, 0.3, 2);
-            Red.turnTo(-135, 0.5, 2);
+            Blue.autoLaunch(1875, 1850);
+
+            Blue.goToPosition(40, 0, 0,0.5,2);
+
 
 
         }

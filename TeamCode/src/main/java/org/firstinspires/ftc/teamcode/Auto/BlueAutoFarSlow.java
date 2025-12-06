@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
-
+@Disabled
 @Autonomous(name = "Blue Auto Far Side Slow")
 public class BlueAutoFarSlow extends LinearOpMode {
 

@@ -26,13 +26,13 @@ public class BetterRed extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            Red.goToPosition(0, 56, 0, 0.6, 0.5);
+            Red.goToPosition(0, 52, 0, 0.6, 0.5);
 
             //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
 
-            Red.autoLaunch(1540, 1550);
+            Red.autoLaunch(1400, 1390);
 
-            Red.goToPosition(-24, 56, 0, 0.6, 0.5);
+            Red.goToPosition(16, 52, 0, 0.6, 0.5);
 
 
         }

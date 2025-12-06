@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,11 +9,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
-import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
-import org.firstinspires.ftc.teamcode.robots.WisdomBot;
 
-@TeleOp(name = "WisdomTeleop", group = "Test")
-public class WisdomTeleop extends LinearOpMode {
+@TeleOp(name = "WisdomTeleopRed", group = "Test")
+public class WisdomTeleopRed extends LinearOpMode {
     AprilTagVision robot = new AprilTagVision(this, false);
 
     boolean positionLockActive = false;
@@ -29,11 +26,7 @@ public class WisdomTeleop extends LinearOpMode {
 
         robot.restoreSavedPoseIfAvailable();
 
-        boolean xPreviouslyPressed = false;
-        boolean positionLockEnabled = false;
-        double savedX = 0;
-        double savedY = 0;
-        double savedHeading = 0;
+
 
 
         telemetry.addLine("Ready - Press Start");
@@ -58,6 +51,7 @@ public class WisdomTeleop extends LinearOpMode {
             }
             if(gamepad1.circleWasPressed()){
                 tagAlign = true;
+                robot.resetYawController();
             }
 
             if(gamepad1.crossWasPressed()){
@@ -66,10 +60,10 @@ public class WisdomTeleop extends LinearOpMode {
             }
 
             if(positionLockActive){
-                robot.goToPositionNonBlocking(locky, lockx, robot.getHeading(AngleUnit.DEGREES), 0.7);
+                robot.goToPositionNonBlocking(locky, lockx, robot.getHeading(AngleUnit.DEGREES), 1);
             }
             else if (tagAlign) {
-                robot.alignToTagNonBlocking(60, 0, 0.7);
+                robot.alignToTagAngleOnly(-29, 1, 24);
             }
             else {
                 gamepad1Controls();
@@ -99,7 +93,7 @@ public class WisdomTeleop extends LinearOpMode {
         robot.launch(gamepad1.rightBumperWasPressed());
         robot.launchHigh(gamepad1.leftBumperWasPressed());
         if(gamepad1.right_trigger > 0.5){
-            robot.autoLaunch(1600, 1600);
+            robot.autoLaunch(1475, 1450);
         }
         if(gamepad1.left_trigger > 0.5){
             robot.autoLaunch(2050, 2000);
@@ -125,6 +119,8 @@ public class WisdomTeleop extends LinearOpMode {
             positionLockActive = false;
         }
     }
+
+
 
 
 

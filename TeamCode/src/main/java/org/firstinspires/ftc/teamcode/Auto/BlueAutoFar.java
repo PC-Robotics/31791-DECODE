@@ -29,7 +29,7 @@ public class BlueAutoFar extends LinearOpMode {
 
             //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
 
-            FarBlue.autoLaunch(1540, 1550);
+            FarBlue.autoLaunch(1430, 1400);
 
             FarBlue.goToPosition(0, 3, 0, 0.6, 0.5);
 

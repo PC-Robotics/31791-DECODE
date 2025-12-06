@@ -27,7 +27,7 @@ public class RedAutoFar extends LinearOpMode {
 
             //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
 
-            FarRed.autoLaunch(1540, 1550);
+            FarRed.autoLaunch(1430, 1400);
 
             FarRed.goToPosition(0, 3, 0, 0.6, 0.5);
 

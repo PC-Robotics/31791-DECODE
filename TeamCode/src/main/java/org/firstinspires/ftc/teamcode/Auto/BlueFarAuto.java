@@ -3,14 +3,11 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
-@Disabled
-@Autonomous(name = "Auto Blue Side")
-public class AutonBlue extends LinearOpMode {
+@Autonomous(name = "Far Shot Blue")
+public class BlueFarAuto extends LinearOpMode {
 
     WisdomBot Blue = new WisdomBot(this, false);
 
@@ -23,11 +20,12 @@ public class AutonBlue extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            Blue.forward(48, 0.6, 2);
+            Blue.goToPosition(-5, -4, -10, 0.5, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Blue.autoLaunch(1500, 1400);
-            Blue.goToPosition(-24, 48, 0, 0.3, 2);
-            Blue.turnTo(135,0.5,2);
+            Blue.autoLaunch(2150, 2100);
+
+            Blue.goToPosition(40, 0, 0,0.5,2);
+
 
 
         }

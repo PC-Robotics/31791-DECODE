@@ -213,3 +213,6 @@ public class WisdomBot extends DriveBasePID {
 
 
 }
+
+//export PATH=$PATH:/Users/carter.hamaway/Library/Android/sdk/platform-tools
+//adb connect 192.168.43.1:5555

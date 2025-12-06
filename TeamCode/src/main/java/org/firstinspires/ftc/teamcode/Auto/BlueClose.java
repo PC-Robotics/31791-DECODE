@@ -5,31 +5,36 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.robots.WisdomBot;
-@Disabled
-@Autonomous(name = "Auto Blue Side")
-public class Klutch extends LinearOpMode {
 
-    WisdomBot Blue = new WisdomBot(this, false);
+@Autonomous(name = "Blue Auto Close")
+public class BlueClose extends LinearOpMode {
 
-    public void runOpMode() throws InterruptedException{
+    AprilTagVision Blue = new AprilTagVision(this, false);
+
+
+    public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Blue.init();
 
+
         waitForStart();
 
-        if(opModeIsActive())
-        {
-            Blue.goToPosition(-5, 30, 0, 0.5, 2);
-            //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Blue.autoLaunch(1200, 1200);
+        if (opModeIsActive()) {
 
+            Blue.goToPosition(0, 52, 0, 0.6, 0.5);
+
+            //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
+
+            Blue.autoLaunch(1400, 1390);
+
+            Blue.goToPosition(16, 30, 0, 0.6, 0.5);
 
 
         }
-
     }
+
 }

@@ -1,10 +1,30 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_DEADBAND;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_KD;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_KI;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_KP;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_MAX_AUTO;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.DRIVE_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_DEADBAND;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_KD;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_KI;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_KP;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_MAX_AUTO;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.STRAFE_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_DEADBAND;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_KD;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_KI;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_KP;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_MAX_AUTO;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.YAW_TOLERANCE;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.support.PIDController;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -16,6 +36,11 @@ public class AprilTagVision extends WisdomBot {
 
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
+
+    private PIDController driveController = new PIDController(DRIVE_KP,DRIVE_KI,DRIVE_KD,DRIVE_MAX_AUTO,DRIVE_TOLERANCE,DRIVE_DEADBAND,false);
+    private PIDController strafeController = new PIDController(STRAFE_KP,STRAFE_KI,STRAFE_KD,STRAFE_MAX_AUTO,STRAFE_TOLERANCE,STRAFE_DEADBAND, false);
+    private PIDController yawController = new PIDController(YAW_KP,YAW_KI,YAW_KD,YAW_MAX_AUTO,YAW_TOLERANCE,YAW_DEADBAND,true);
+
 
 
 
@@ -110,46 +135,64 @@ public class AprilTagVision extends WisdomBot {
                 )
         );
     }
+    public void alignToTagNonBlocking(double desiredDistance, double desiredAngle, double power) {
 
+        update(); // update vision system
 
-    public void alignToTagNonBlocking(double desiredDistance, double desiredAngleFromTag, double movePower) {
+        // If no tag, stop
+        if (getTagID() == -1) {
+            drive(0, 0, 0);
+            return;
+        }
+
+        double tagDist = getTagDistance();              // forward distance to tag
+        double tagAngle = getTagAngle();                // angle offset from center (degrees)
+
+        // --- Compute robot-relative error ---
+        double forwardError = tagDist - desiredDistance;
+
+        // Convert angle offset to left/right distance error
+        double lateralError = Math.tan(Math.toRadians(tagAngle)) * tagDist;
+
+        // Heading correction: want tag centered → 0°
+        double headingError = tagAngle - desiredAngle;
+
+        // --- Convert robot-relative to robot-centric frame (same as goToPosition) ---
+        double negativeRadianHeading = -getHeading(AngleUnit.RADIANS);
+
+        double rotatedX = forwardError * Math.cos(negativeRadianHeading)
+                - lateralError * Math.sin(negativeRadianHeading);
+
+        double rotatedY = forwardError * Math.sin(negativeRadianHeading)
+                + lateralError * Math.cos(negativeRadianHeading);
+
+        // --- PID control ---
+        double axialPower = driveController.getOutputFromError(rotatedX);
+        double lateralPower = strafeController.getOutputFromError(rotatedY);
+        double yawPower = yawController.getOutput(headingError);
+
+        drive(-axialPower * power, -lateralPower * power, -yawPower * power);
+    }
+
+    public void alignToTagAngleOnly(double desiredAngle, double power, int desiredTag) {
 
         update();
 
-        if(getTagID() == -1) {
-            // No tag, stop
-            drive(0,0,0);
+        if (getTagID() != desiredTag) {
+            drive(0, 0, 0);
             return;
         }
 
-        // Get the tag's field pose
-        double tagX = getTagFieldX();
-        double tagY = getTagFieldY();
-        double tagYaw = getTagFieldHeading(); // degrees
+        double tagAngle = getTagAngle();
 
-        if(Double.isNaN(tagX) || Double.isNaN(tagY) || Double.isNaN(tagYaw)) {
-            // tag field pose not valid yet
-            return;
-        }
+        double headingError = -tagAngle + desiredAngle;
 
-        // Desired robot heading
-        double desiredHeading = tagYaw + desiredAngleFromTag;
+        double yawPower = yawController.getOutputFromError(headingError);
 
-        // Offset in inches from tag
-        double offsetX = desiredDistance * Math.sin(Math.toRadians(desiredHeading));
-        double offsetY = desiredDistance * Math.cos(Math.toRadians(desiredHeading));
-
-        // Absolute field target
-        double targetX = tagX - offsetX;
-        double targetY = tagY - offsetY;
-
-        // Move toward target
-        goToPositionNonBlocking(targetY, targetX, desiredHeading, movePower);
+        drive(0, 0, yawPower);
     }
-
-
     public double getTagDistance() { return lastRange; }
-    public double getTagAngle() { return lastBearing; }
+    public double getTagAngle() { return lastTagFieldYaw; }
     public double getTagFieldX() {
         return lastTagFieldX;
     }
@@ -160,6 +203,10 @@ public class AprilTagVision extends WisdomBot {
 
     public double getTagFieldHeading() {   // yaw
         return lastTagFieldYaw;
+    }
+
+    public void resetYawController(){
+        yawController.reset();
     }
 
     public int getTagID() { return lastTagID; }

@@ -27,14 +27,14 @@ public class ConstantsPID
     public static double YAW_KP = 0.02;//0.5
     public static double YAW_KI = 0;
     public static double YAW_KD = 0;
-    public static final double YAW_TOLERANCE = 6;//1
+    public static final double YAW_TOLERANCE = 2;//1
     public static final double YAW_DEADBAND = .25;
     public static final double YAW_MAX_AUTO = 0.8;
 
     //Constants dealing with launch velocity
-    public static final double LAUNCHER_HIGH_VELOCITY = 2050;
-    public static final double LAUNCHER_LOWER_VELOCITY = 2000;
-    public static final double LAUNCHER_TARGET_VELOCITY = 1570;
-    public static final double LAUNCHER_MIN_VELOCITY = 1540;
+    public static final double LAUNCHER_HIGH_VELOCITY = 1850;
+    public static final double LAUNCHER_LOWER_VELOCITY = 1800;
+    public static final double LAUNCHER_TARGET_VELOCITY = 1475;
+    public static final double LAUNCHER_MIN_VELOCITY = 1450;
 
 }
