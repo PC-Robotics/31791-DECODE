@@ -20,11 +20,11 @@ public class BlueFarAuto extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            Blue.goToPosition(-5, -4, -10, 0.5, 2);
+            Blue.goToPosition(5, -4, 16.2, 0.5, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
-            Blue.autoLaunch(2150, 2100);
+            Blue.autoLaunch(1875, 1850);
 
-            Blue.goToPosition(40, 0, 0,0.5,2);
+            Blue.goToPosition(-40, 0, 0,0.5,2);
 
 
 

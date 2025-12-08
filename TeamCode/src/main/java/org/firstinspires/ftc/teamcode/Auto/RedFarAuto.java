@@ -19,7 +19,7 @@ public class RedFarAuto extends LinearOpMode {
 
         if(opModeIsActive())
         {
-            Blue.goToPosition(5, -4, -16.6, 0.5, 2);
+            Blue.goToPosition(5, -4, -16.2, 0.5, 2);
             //Blue.goToPosition(0, 24, 0, 0.3,2);
             Blue.autoLaunch(1875, 1850);
 
