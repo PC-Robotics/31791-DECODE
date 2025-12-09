@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_HIGH_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_LOWER_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_MIN_VELOCITY;
+import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_TARGET_VELOCITY;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -74,6 +79,9 @@ public class WisdomTeleopRed extends LinearOpMode {
             telemetry.addData("April Tag Distance  ::  ", Dist );
             telemetry.addData("April Tag Angle  ::  ", Angle);
             telemetry.addData("Launcher Velocity ::  " , Velocity);
+            telemetry.addData("Launcher Value Normal :: ", LAUNCHER_TARGET_VELOCITY);
+            telemetry.addData("Launcher Value Far :: ", LAUNCHER_HIGH_VELOCITY);
+
 
 
             robot.launch(gamepad1.rightBumperWasPressed());
@@ -117,6 +125,22 @@ public class WisdomTeleopRed extends LinearOpMode {
 
         if(gamepad1.cross){
             positionLockActive = false;
+        }
+        if(gamepad1.dpadUpWasPressed()){
+            LAUNCHER_TARGET_VELOCITY += 10;
+            LAUNCHER_MIN_VELOCITY += 10;
+        }
+        if(gamepad1.dpadDownWasPressed()){
+            LAUNCHER_TARGET_VELOCITY -= 10;
+            LAUNCHER_MIN_VELOCITY -= 10;
+        }
+        if(gamepad1.dpadLeftWasPressed()){
+            LAUNCHER_HIGH_VELOCITY += 10;
+            LAUNCHER_LOWER_VELOCITY += 10;
+        }
+        if(gamepad1.dpadRightWasPressed()){
+            LAUNCHER_HIGH_VELOCITY -= 10;
+            LAUNCHER_LOWER_VELOCITY -=10;
         }
     }
 
