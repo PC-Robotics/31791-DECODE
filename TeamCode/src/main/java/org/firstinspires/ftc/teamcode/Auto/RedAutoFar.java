@@ -22,6 +22,7 @@ public class RedAutoFar extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
+            //                     y=strafe   x=fwrd/bwrd
 
             FarRed.goToPosition(0, 76, 134, 0.6, 0.5);
 

@@ -172,6 +172,8 @@ public class DriveBasePID extends DriveBaseOdometry
         drive(0,0,0);
     }
 
+    //                     y=strafe   x=fwrd/bwrd
+    //                     pos=left
     public void goToPosition(double yLocation, double xLocation, double headingDegree, double power, double holdTime)
     {
         driveController.reset(yLocation, power);
