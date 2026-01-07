@@ -21,6 +21,8 @@ public class WisdomTeleop extends LinearOpMode {
     boolean tagAlign = false;
     double lockx, locky, lockheading;
 
+    boolean isInput = false;
+
     @Override
     public void runOpMode(){
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -29,11 +31,8 @@ public class WisdomTeleop extends LinearOpMode {
 
         robot.restoreSavedPoseIfAvailable();
 
-        boolean xPreviouslyPressed = false;
-        boolean positionLockEnabled = false;
-        double savedX = 0;
-        double savedY = 0;
-        double savedHeading = 0;
+
+
 
 
         telemetry.addLine("Ready - Press Start");
@@ -65,15 +64,65 @@ public class WisdomTeleop extends LinearOpMode {
                 tagAlign = false;
             }
 
-            if(positionLockActive){
+            if(positionLockActive || !isInput){
                 robot.goToPositionNonBlocking(locky, lockx, robot.getHeading(AngleUnit.DEGREES), 0.7);
             }
             else if (tagAlign) {
                 robot.alignToTagNonBlocking(60, 0, 0.7);
             }
-            else {
-                gamepad1Controls();
-            }
+
+                double axial = -gamepad1.left_stick_y;   // Forward on left stick yields negative val
+                double lateral = gamepad1.left_stick_x;
+                double yaw = gamepad1.right_stick_x;
+                if(!positionLockActive) {
+                    if(Math.abs(axial) + Math.abs(lateral) + Math.abs(yaw) != 0){
+                        isInput = true;
+                        robot.drive(axial, lateral, yaw, 0.92);
+                    }
+                    else{
+                        if(isInput){
+                            Pose2D pose = robot.getRobotPosition();
+                            lockx = pose.getX(DistanceUnit.INCH);
+                            locky = pose.getY(DistanceUnit.INCH);
+                            robot.setLockY(locky);
+                            robot.setLockX(lockx);
+                            robot.setLockHeading(pose.getHeading(AngleUnit.DEGREES));
+                        }
+                        isInput = false;
+                    }
+
+
+                }
+
+                robot.launch(gamepad1.rightBumperWasPressed());
+                robot.launchHigh(gamepad1.leftBumperWasPressed());
+                if(gamepad1.right_trigger > 0.5){
+                    robot.autoLaunch(1600, 1600);
+                }
+                if(gamepad1.left_trigger > 0.5){
+                    robot.autoLaunch(2050, 2000);
+                }
+                if(gamepad1.dpad_up){
+                    robot.stopLauncher();
+                }
+                if(gamepad1.startWasPressed()){
+                    robot.toggleFC();
+                }
+                if(gamepad1.cross){
+                    positionLockActive = false;
+                }
+                if(gamepad1.triangle){
+                    Pose2D pose = robot.getRobotPosition();
+                    lockx = pose.getX(DistanceUnit.INCH);
+                    locky = pose.getY(DistanceUnit.INCH);
+                    lockheading = pose.getHeading(AngleUnit.DEGREES);
+                    positionLockActive = true;
+                }
+
+                if(gamepad1.cross){
+                    positionLockActive = false;
+                }
+
 
             telemetry.addData("Lock x :: ", lockx );
             telemetry.addData("Lock y :: ", locky );
@@ -89,41 +138,7 @@ public class WisdomTeleop extends LinearOpMode {
     }
 
     public void gamepad1Controls(){
-        if(!positionLockActive) {
-            double axial = -gamepad1.left_stick_y;   // Forward on left stick yields negative val
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
 
-            robot.drive(axial, lateral, yaw, 0.92);
-        }
-        robot.launch(gamepad1.rightBumperWasPressed());
-        robot.launchHigh(gamepad1.leftBumperWasPressed());
-        if(gamepad1.right_trigger > 0.5){
-            robot.autoLaunch(1600, 1600);
-        }
-        if(gamepad1.left_trigger > 0.5){
-            robot.autoLaunch(2050, 2000);
-        }
-        if(gamepad1.dpad_up){
-            robot.stopLauncher();
-        }
-        if(gamepad1.startWasPressed()){
-            robot.toggleFC();
-        }
-        if(gamepad1.cross){
-            positionLockActive = false;
-        }
-        if(gamepad1.triangle){
-            Pose2D pose = robot.getRobotPosition();
-            lockx = pose.getX(DistanceUnit.INCH);
-            locky = pose.getY(DistanceUnit.INCH);
-            lockheading = pose.getHeading(AngleUnit.DEGREES);
-            positionLockActive = true;
-        }
-
-        if(gamepad1.cross){
-            positionLockActive = false;
-        }
     }
 
 
