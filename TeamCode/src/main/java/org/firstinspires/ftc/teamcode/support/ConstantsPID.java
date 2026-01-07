@@ -24,7 +24,7 @@ public class ConstantsPID
 
 
     // Constants dealing with turning
-    public static double YAW_KP = 0.02;//0.
+    public static double YAW_KP = 0.02;
     public static double YAW_KI = 0;
     public static double YAW_KD = 0;
     public static final double YAW_TOLERANCE = 2;//1
