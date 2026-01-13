@@ -25,12 +25,12 @@ public class TagDriveTest extends LinearOpMode {
         while(opModeIsActive()){
             robot.update();
             double Dist = robot.getTagDistance();
-            double Angle = robot.getTagAngle();
+            //double Angle = robot.getTagAngle();
             double Velocity = robot.getVelocity2();
             boolean isInput = false;
 
             telemetry.addData("April Tag Distance  ::  ", Dist );
-            telemetry.addData("April Tag Angle  ::  ", Angle);
+            //telemetry.addData("April Tag Angle  ::  ", Angle);
             telemetry.addData("Launcher Velocity ::  " , Velocity);
 
             gamepad1Controls();

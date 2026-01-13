@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.navigation. DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation. Pose2D;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 
-@TeleOp(name = "WisdomTeleop", group = "Test")
-public class WisdomTeleop extends LinearOpMode {
+@TeleOp(name = "TestTeleop", group = "Test")
+public class TestTeleop extends LinearOpMode {
     AprilTagVision robot = new AprilTagVision(this, false);
 
     boolean positionLockActive = false;
@@ -47,22 +47,19 @@ public class WisdomTeleop extends LinearOpMode {
             double Velocity = robot.getVelocity2();
 
 
-
-            if (Bearing > 24 && Bearing < 30 && Dist > 94 && Dist <100){
-                robot.setRGBColor(0.3); // RED
-                lastRGBColor = "Red (Tag Right)";
+            if (Bearing < -5.0) {
+                robot.setRGBColor(0.611);
+                lastRGBColor = "BLUE (Tag Left)";
                 lastRGBValue = 0.611;
-            } else if (Bearing < -25.0 && Bearing > -32.0 && Dist > 94 && Dist <100) {
-                robot.setRGBColor(0.611); // BLUE
-                lastRGBColor = "Blue (Tag Left)";
+            } else if (Bearing > 5.0) {
+                robot.setRGBColor(0.3);
+                lastRGBColor = "RED (Tag Right)";
                 lastRGBValue = 0.3;
             } else {
                 robot.setRGBColor(0.65);
                 lastRGBColor = "PURPLE (Centered)";
                 lastRGBValue = 0.65;
             }
-
-
 
 
             if (gamepad1.triangleWasPressed()) {
@@ -187,7 +184,7 @@ public class WisdomTeleop extends LinearOpMode {
             telemetry.update();
         }
 
-        robot.setRGBColor(0.0);
+        robot.setRGBColor(0.0);  // Turn off
         robot.saveCurrentPose();
     }
 }

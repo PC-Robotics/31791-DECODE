@@ -37,7 +37,7 @@ public class WisdomTeleopBlue extends LinearOpMode {
             robot.update();
             robot.updatePosition();
             double Dist = robot.getTagDistance();
-            double Angle = robot.getTagAngle();
+            //double Angle = robot.getTagAngle();
             double Velocity = robot.getVelocity2();
 
             if (gamepad1.triangleWasPressed()) {
@@ -72,7 +72,7 @@ public class WisdomTeleopBlue extends LinearOpMode {
             telemetry.addData("Lock x :: ", lockx );
             telemetry.addData("Lock y :: ", locky );
             telemetry.addData("April Tag Distance  ::  ", Dist );
-            telemetry.addData("April Tag Angle  ::  ", Angle);
+            //telemetry.addData("April Tag Angle  ::  ", Angle);
             telemetry.addData("Launcher Velocity ::  " , Velocity);
 
 
