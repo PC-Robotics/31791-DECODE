@@ -219,8 +219,7 @@ public class AprilTagVision extends WisdomBot {
      */
     public enum RGBColor {
         OFF(0.0),       // 500µs
-        RED(0.277),     // 1100µs
-        ORANGE(0.333),  // 1200µs
+        RED(0.33),     // 1100µs
         YELLOW(0.388),  // 1300µs
         SAGE(0.444),    // 1400µs
         GREEN(0.500),   // 1500µs
@@ -244,8 +243,11 @@ public class AprilTagVision extends WisdomBot {
     /**
      * Sets the RGB indicator to a specific color using setPosition
      */
-    public void setRGBColor(double position) {
-            rgbIndicator.setPosition(position);
+    public void setRGBColor(RGBColor color) {
+        if(rgbIndicator != null) {
+            rgbIndicator.setPosition(color.getPosition());
+        }
+
     }
 
     /**

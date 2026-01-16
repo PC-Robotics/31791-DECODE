@@ -9,6 +9,7 @@ import org.firstinspires. ftc.robotcore.external. navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation. DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation. Pose2D;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision.RGBColor;
 
 @TeleOp(name = "WisdomTeleop", group = "Test")
 public class WisdomTeleop extends LinearOpMode {
@@ -48,16 +49,17 @@ public class WisdomTeleop extends LinearOpMode {
 
 
 
-            if (Bearing > 24 && Bearing < 30 && Dist > 94 && Dist <100){
-                robot.setRGBColor(0.3); // RED
+
+            if (Bearing > -5 && Bearing < -2 && Dist > 94 && Dist <108){
+                robot.setRGBColor(RGBColor.RED); // RED
                 lastRGBColor = "Red (Tag Right)";
                 lastRGBValue = 0.611;
             } else if (Bearing < -25.0 && Bearing > -32.0 && Dist > 94 && Dist <100) {
-                robot.setRGBColor(0.611); // BLUE
+                robot.setRGBColor(RGBColor.BLUE); // BLUE
                 lastRGBColor = "Blue (Tag Left)";
                 lastRGBValue = 0.3;
             } else {
-                robot.setRGBColor(0.65);
+                robot.setRGBColor(RGBColor.VIOLET);
                 lastRGBColor = "PURPLE (Centered)";
                 lastRGBValue = 0.65;
             }
@@ -91,31 +93,31 @@ public class WisdomTeleop extends LinearOpMode {
             if(gamepad1.squareWasPressed()){
                 lastRGBValue = 0.277;
                 lastRGBColor = "RED";
-                robot.setRGBColor(0.3);  // RED
+                robot.setRGBColor(RGBColor.RED);  // RED
             }
 
             if(gamepad1.dpad_left){
                 lastRGBValue = 0.500;
                 lastRGBColor = "GREEN";
-                robot.setRGBColor(0.500);  // GREEN
+                robot.setRGBColor(RGBColor.GREEN);  // GREEN
             }
 
             if(gamepad1.dpad_right){
                 lastRGBValue = 0.611;
                 lastRGBColor = "BLUE";
-                robot.setRGBColor(0.611);  // BLUE
+                robot.setRGBColor(RGBColor.BLUE);  // BLUE
             }
 
             if(gamepad1.dpad_down){
                 lastRGBValue = 0.0;
                 lastRGBColor = "OFF";
-                robot. setRGBColor(0.0);  // OFF
+                robot. setRGBColor(RGBColor.OFF);  // OFF
             }
 
             if(gamepad1.dpad_up){
-                lastRGBValue = 0.65;
+                lastRGBValue = 0.722;
                 lastRGBColor = "Purple";
-                robot.setRGBColor(0.65);
+                robot.setRGBColor(RGBColor.VIOLET);
                 robot.stopLauncher();
             }
 
@@ -126,7 +128,7 @@ public class WisdomTeleop extends LinearOpMode {
             if(! positionLockActive && !tagAlign) {
                 if(Math.abs(axial) + Math.abs(lateral) + Math.abs(yaw) != 0){
                     isInput = true;
-                    robot.drive(axial, lateral, yaw, 0.92);
+                    robot.drive(axial, lateral, yaw, 0.89);
                 }
                 else{
                     if(isInput){
@@ -182,12 +184,14 @@ public class WisdomTeleop extends LinearOpMode {
 
             telemetry.addData("========== LAUNCHER ==========", "");
             telemetry.addData("Launcher Velocity ::   ", Velocity);
+            telemetry.addData("Low Launch State  ::  ", robot.getLaunchState(0));
+            telemetry.addData("High Launch State  ::  ", robot.getLaunchState(1));
             telemetry.addData("Position Lock ::   ", positionLockActive);
 
             telemetry.update();
         }
 
-        robot.setRGBColor(0.0);
+        robot.setRGBColor(RGBColor.OFF);
         robot.saveCurrentPose();
     }
 }

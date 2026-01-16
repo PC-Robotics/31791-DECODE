@@ -6,8 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
-import org.firstinspires.ftc.teamcode.robots.DriveBasePID;
-import org.firstinspires.ftc.teamcode.robots.WisdomBot;
+
 
 @TeleOp(name = "Tag Drive Test", group = "Test")
 public class TagDriveTest extends LinearOpMode {
@@ -27,7 +26,7 @@ public class TagDriveTest extends LinearOpMode {
             double Dist = robot.getTagDistance();
             //double Angle = robot.getTagAngle();
             double Velocity = robot.getVelocity2();
-            boolean isInput = false;
+            //boolean isInput = false;
 
             telemetry.addData("April Tag Distance  ::  ", Dist );
             //telemetry.addData("April Tag Angle  ::  ", Angle);

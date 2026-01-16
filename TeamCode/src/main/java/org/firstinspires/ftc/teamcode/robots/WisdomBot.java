@@ -159,6 +159,18 @@ public class WisdomBot extends DriveBasePID {
 
     public double getVelocity2() { return launcher.getVelocity(); }
 
+    public LaunchState getLaunchState(int highLow) {
+
+        if(highLow == 0)
+            return launchState;
+
+        else if(highLow == 1)
+            return launchStateHigh;
+
+        else
+            return null;
+    }
+
     /** High launch (high velocity) **/
 
     public void launchHigh(boolean shotRequested) {
