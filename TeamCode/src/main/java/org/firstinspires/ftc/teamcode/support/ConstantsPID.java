@@ -35,7 +35,7 @@ public class ConstantsPID
     public static double LAUNCHER_HIGH_VELOCITY = 1850;
     public static double LAUNCHER_LOWER_VELOCITY = 1800;
     public static double LAUNCHER_TARGET_VELOCITY = 1540;
-    public static double LAUNCHER_MIN_VELOCITY = 1550;
+    public static double LAUNCHER_MIN_VELOCITY = 1520;
 
 
 
