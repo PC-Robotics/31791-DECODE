@@ -60,9 +60,21 @@ public class test extends LinearOpMode {
             telemetry.update();
 
             //Blue.goToPosition(0,0,0,0.5, 1);
+            Blue.goToPosition(-24, -46, 0, 0.5, 1 );
             Blue.goToPosition(-10, 55, 29, 0.4, 1);// blue launch zone
             Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-53,-47, 48, 0.5, 1);
+            Blue.goToPosition(-24, 38, -90, 0.4, 1);//first line
+            Blue.goToPosition(-10, 55, 29, 0.4, 1);// blue launch zone
+            Blue.autoLaunch(1800, 1810);
+            Blue.goToPosition(-24, 12, -90, 0.4, 1);//mid line
+            Blue.goToPosition(-10, 55, 29, 0.4, 1);//blue launch zone
+            Blue.autoLaunch(1800, 1810);
+            Blue.goToPosition(-24, -11, -90, 0.4, 1);//last line
+            Blue.goToPosition(-10, 55, 29, 0.4, 1);
+            Blue.autoLaunch(1800, 1810);
+
+
+
 
 
         }
