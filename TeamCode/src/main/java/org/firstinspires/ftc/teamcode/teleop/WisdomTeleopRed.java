@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_HIGH_VELOCITY;
-import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_LOWER_VELOCITY;
-import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_MIN_VELOCITY;
-import static org.firstinspires.ftc.teamcode.support.ConstantsPID.LAUNCHER_TARGET_VELOCITY;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com. qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires. ftc.robotcore.external. navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation. DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation. Pose2D;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
+import org.firstinspires.ftc.teamcode.robots.AprilTagVision.RGBColor;
 
 @TeleOp(name = "WisdomTeleopRed", group = "Test")
 public class WisdomTeleopRed extends LinearOpMode {
@@ -21,42 +17,72 @@ public class WisdomTeleopRed extends LinearOpMode {
 
     boolean positionLockActive = false;
     boolean tagAlign = false;
-    double lockx, locky, lockheading;
+    double lockx = 0.0;
+    double locky = 0.0;
+    double lockheading = 0.0;
+
+
+
+    boolean isInput = false;
+
+    double lastRGBValue = 0.0;
+    String lastRGBColor = "OFF";
 
     @Override
     public void runOpMode(){
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robot.init();
-
         robot.restoreSavedPoseIfAvailable();
 
-
-
-
-        telemetry.addLine("Ready - Press Start");
+        telemetry. addLine("Ready - Press Start");
+        telemetry.addLine("Square = Test RGB");
         telemetry.update();
         waitForStart();
+
         while(opModeIsActive()){
 
             robot.update();
             robot.updatePosition();
+
             double Dist = robot.getTagDistance();
-            //double Angle = robot.getTagAngle();
+            double Bearing = robot.getTagBearing();
             double Velocity = robot.getVelocity2();
+
+
+
+            if(robot.getTagID() == 24) {
+                if (Bearing > -5 && Bearing < 4 && Dist > 94 && Dist < 130) {
+                    robot.setRGBColor(RGBColor.RED); // RED
+                    lastRGBColor = "Red (Tag Right)";
+                    lastRGBValue = 0.611;
+
+                } else {
+                    robot.setRGBColor(RGBColor.VIOLET);
+                    lastRGBColor = "PURPLE (Centered)";
+                    lastRGBValue = 0.65;
+                }
+            }
+
+
+
+
 
             if (gamepad1.triangleWasPressed()) {
                 Pose2D pose = robot.getRobotPosition();
                 lockx = pose.getX(DistanceUnit.INCH);
                 locky = pose.getY(DistanceUnit.INCH);
                 robot.setLockY(locky);
-                robot.setLockX(lockx);
+                robot. setLockX(lockx);
                 robot.setLockHeading(pose.getHeading(AngleUnit.DEGREES));
                 positionLockActive = true;
+                tagAlign = false;
             }
+
             if(gamepad1.circleWasPressed()){
                 tagAlign = true;
-                robot.resetYawController();
+                positionLockActive = false;
+                robot.resetAllControllers();
             }
 
             if(gamepad1.crossWasPressed()){
@@ -64,92 +90,79 @@ public class WisdomTeleopRed extends LinearOpMode {
                 tagAlign = false;
             }
 
-            if(positionLockActive){
-                robot.goToPositionNonBlocking(locky, lockx, robot.getHeading(AngleUnit.DEGREES), 1);
-            }
-            else if (tagAlign) {
-                robot.alignToTagAngleOnly(-29, 1, 24);
-            }
-            else {
-                gamepad1Controls();
-            }
-
-            telemetry.addData("Lock x :: ", lockx );
-            telemetry.addData("Lock y :: ", locky );
-            telemetry.addData("April Tag Distance  ::  ", Dist );
-            //telemetry.addData("April Tag Angle  ::  ", Angle);
-            telemetry.addData("Launcher Velocity ::  " , Velocity);
-            telemetry.addData("Launcher Value Normal :: ", LAUNCHER_TARGET_VELOCITY);
-            telemetry.addData("Launcher Value Far :: ", LAUNCHER_HIGH_VELOCITY);
 
 
-
-            robot.launch(gamepad1.rightBumperWasPressed());
-            telemetry.update();
-        }
-
-    }
-
-    public void gamepad1Controls(){
-        if(!positionLockActive) {
-            double axial = -gamepad1.left_stick_y;   // Forward on left stick yields negative val
+            double axial = -gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
 
-            robot.drive(axial, lateral, yaw, 0.92);
-        }
-        robot.launch(gamepad1.rightBumperWasPressed());
-        robot.launchHigh(gamepad1.leftBumperWasPressed());
-        if(gamepad1.right_trigger > 0.5){
-            robot.autoLaunch(1475, 1450);
-        }
-        if(gamepad1.left_trigger > 0.5){
-            robot.autoLaunch(2050, 2000);
-        }
-        if(gamepad1.dpad_up){
-            robot.stopLauncher();
-        }
-        if(gamepad1.startWasPressed()){
-            robot.toggleFC();
-        }
-        if(gamepad1.cross){
-            positionLockActive = false;
-        }
-        if(gamepad1.triangle){
-            Pose2D pose = robot.getRobotPosition();
-            lockx = pose.getX(DistanceUnit.INCH);
-            locky = pose.getY(DistanceUnit.INCH);
-            lockheading = pose.getHeading(AngleUnit.DEGREES);
-            positionLockActive = true;
+            if(! positionLockActive && !tagAlign) {
+                if(Math.abs(axial) + Math.abs(lateral) + Math.abs(yaw) != 0){
+                    isInput = true;
+                    robot.drive(axial, lateral, yaw, 0.89);
+                }
+                else{
+                    if(isInput){
+                        Pose2D pose = robot.getRobotPosition();
+                        lockx = pose.getX(DistanceUnit.INCH);
+                        locky = pose.getY(DistanceUnit. INCH);
+                        robot.setLockY(locky);
+                        robot.setLockX(lockx);
+                        robot.setLockHeading(pose.getHeading(AngleUnit.DEGREES));
+                    }
+                    isInput = false;
+                }
+            }
+
+            if(positionLockActive || !isInput){
+                robot. goToPositionNonBlocking(locky, lockx, robot.getHeading(AngleUnit.DEGREES), 0.7);
+            }
+            else if (tagAlign) {
+                robot.alignToTagNonBlocking(97, -3, 0.7);
+            }
+
+            robot.launch(gamepad1.rightBumperWasPressed());
+            robot.launchHigh(gamepad1.leftBumperWasPressed());
+
+            if(gamepad1.right_trigger > 0.5){
+                robot.autoLaunch(1476, 1475);
+            }
+            if(gamepad1.left_trigger > 0.5){
+                robot.autoLaunch(2050, 2000);
+            }
+
+            if(gamepad1.startWasPressed()){
+                robot.toggleFC();
+            }
+
+            // Telemetry
+            telemetry. addData("========== RGB TEST ==========", "");
+            telemetry.addData("Last RGB Command", lastRGBColor);
+            telemetry.addData("Last RGB Value", lastRGBValue);
+            telemetry.addData("Square Button", gamepad1.square ?  "PRESSED" : "not pressed");
+            telemetry. addData("", "");
+
+            telemetry.addData("========== POSITION ==========", "");
+            telemetry.addData("Lock x ::  ", lockx);
+            telemetry.addData("Lock y ::  ", locky);
+            telemetry.addData("", "");
+
+            telemetry.addData("========== APRIL TAG ==========", "");
+            telemetry.addData("April Tag Distance  ::   ", Dist);
+            telemetry.addData("April Tag Bearing  ::   ", Bearing);
+            telemetry.addData("Tag Align Mode ::   ", tagAlign);
+            telemetry.addData("", "");
+
+            telemetry.addData("========== LAUNCHER ==========", "");
+            telemetry.addData("Launcher Velocity ::   ", Velocity);
+            telemetry.addData("Low Launch State  ::  ", robot.getLaunchState(0));
+            telemetry.addData("High Launch State  ::  ", robot.getLaunchState(1));
+            telemetry.addData("Position Lock ::   ", positionLockActive);
+
+            telemetry.update();
         }
 
-        if(gamepad1.cross){
-            positionLockActive = false;
-        }
-        if(gamepad1.dpadUpWasPressed()){
-            LAUNCHER_TARGET_VELOCITY += 10;
-            LAUNCHER_MIN_VELOCITY += 10;
-        }
-        if(gamepad1.dpadDownWasPressed()){
-            LAUNCHER_TARGET_VELOCITY -= 10;
-            LAUNCHER_MIN_VELOCITY -= 10;
-        }
-        if(gamepad1.dpadLeftWasPressed()){
-            LAUNCHER_HIGH_VELOCITY += 10;
-            LAUNCHER_LOWER_VELOCITY += 10;
-        }
-        if(gamepad1.dpadRightWasPressed()){
-            LAUNCHER_HIGH_VELOCITY -= 10;
-            LAUNCHER_LOWER_VELOCITY -=10;
-        }
+        robot.setRGBColor(RGBColor.OFF);
+        robot.saveCurrentPose();
     }
-
-
-
-
-
 }
-
-
-//adb connect 192.168.43.1:5555
-

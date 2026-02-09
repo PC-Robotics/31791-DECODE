@@ -66,7 +66,7 @@ public class WisdomBot extends DriveBasePID {
 
         launcher.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         launcher.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
+        launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(209.5, 0, 0, 13.10111));
 
         leftFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFeeder.setPower(STOP_SPEED);

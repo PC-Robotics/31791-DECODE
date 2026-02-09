@@ -21,6 +21,8 @@ public class WisdomTeleop extends LinearOpMode {
     double locky = 0.0;
     double lockheading = 0.0;
 
+
+
     boolean isInput = false;
 
     double lastRGBValue = 0.0;
@@ -49,19 +51,27 @@ public class WisdomTeleop extends LinearOpMode {
 
 
 
-
-            if (Bearing > -5 && Bearing < -2 && Dist > 94 && Dist <108){
-                robot.setRGBColor(RGBColor.RED); // RED
-                lastRGBColor = "Red (Tag Right)";
-                lastRGBValue = 0.611;
-            } else if (Bearing < -25.0 && Bearing > -32.0 && Dist > 94 && Dist <100) {
-                robot.setRGBColor(RGBColor.BLUE); // BLUE
-                lastRGBColor = "Blue (Tag Left)";
-                lastRGBValue = 0.3;
-            } else {
-                robot.setRGBColor(RGBColor.VIOLET);
-                lastRGBColor = "PURPLE (Centered)";
-                lastRGBValue = 0.65;
+            if(robot.getTagID() == 24) {
+                if (Bearing > -3 && Bearing < 1 && Dist > 94 && Dist < 108) {
+                    robot.setRGBColor(RGBColor.RED); // RED
+                    lastRGBColor = "Red (Tag Right)";
+                    lastRGBValue = 0.611;
+                } else {
+                    robot.setRGBColor(RGBColor.VIOLET);
+                    lastRGBColor = "PURPLE (Centered)";
+                    lastRGBValue = 0.65;
+                }
+            }
+            if(robot.getTagID() == 20){
+                if (Bearing > -7 && Bearing < 0 && Dist > 94 && Dist < 108) {
+                    robot.setRGBColor(RGBColor.BLUE); // RED
+                    lastRGBColor = "Blue (Tag Left)";
+                    lastRGBValue = 0.611;
+                } else {
+                    robot.setRGBColor(RGBColor.VIOLET);
+                    lastRGBColor = "PURPLE (Centered)";
+                    lastRGBValue = 0.65;
+                }
             }
 
 
@@ -154,7 +164,7 @@ public class WisdomTeleop extends LinearOpMode {
             robot.launchHigh(gamepad1.leftBumperWasPressed());
 
             if(gamepad1.right_trigger > 0.5){
-                robot.autoLaunch(1600, 1600);
+                robot.autoLaunch(1476, 1475);
             }
             if(gamepad1.left_trigger > 0.5){
                 robot.autoLaunch(2050, 2000);

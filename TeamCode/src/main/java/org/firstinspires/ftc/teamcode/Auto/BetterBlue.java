@@ -25,7 +25,7 @@ public class BetterBlue extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            Blue.goToPosition(0, 52, 0, 0.6, 0.5);
+            Blue.goToPosition(-19.497, 39.948, 0, 0.6, 0.5);
 
             //Far.alignToTag(55, 0, 1.5, 1, 1.5, 0.5);
 

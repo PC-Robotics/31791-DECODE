@@ -21,6 +21,10 @@ public class TagDriveTest extends LinearOpMode {
         telemetry.addLine("Ready - Press Start");
         telemetry.update();
         waitForStart();
+
+        robot.initDriveHold();
+
+
         while(opModeIsActive()){
             robot.update();
             double Dist = robot.getTagDistance();
@@ -40,11 +44,12 @@ public class TagDriveTest extends LinearOpMode {
     }
 
     public void gamepad1Controls(){
-        double axial = -gamepad1.left_stick_y;   // Forward on left stick yields negative val
-        double lateral = gamepad1.left_stick_x;
-        double yaw = gamepad1.right_stick_x;
+        robot.driveWithHold(
+                -gamepad1.left_stick_y,
+                gamepad1.left_stick_x,
+                gamepad1.right_stick_x
+        );
 
-        robot.drive(axial,lateral,yaw, 0.92);
 
         robot.launch(gamepad1.rightBumperWasPressed());
         robot.launchHigh(gamepad1.leftBumperWasPressed());
@@ -61,6 +66,7 @@ public class TagDriveTest extends LinearOpMode {
             robot.toggleFC();
         }
     }
+
 
 }
 

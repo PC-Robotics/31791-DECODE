@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="RGB Testing")
 public class RGBTester extends LinearOpMode
+
 {
     Servo RGBLight;
 

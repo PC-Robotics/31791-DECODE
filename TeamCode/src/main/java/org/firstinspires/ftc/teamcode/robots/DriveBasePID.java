@@ -42,6 +42,15 @@ public class DriveBasePID extends DriveBaseOdometry
     private double targetX;
     private double targetY;
     private double targetHeading;
+    private double desiredX;
+    private double desiredY;
+    private double desiredHeading;
+
+    private boolean holdingPosition = false;
+    ElapsedTime loopTimer = new ElapsedTime();
+
+
+
 
     public DriveBasePID(LinearOpMode mode, boolean isFC)
     {
@@ -174,6 +183,8 @@ public class DriveBasePID extends DriveBaseOdometry
 
     //                     y=strafe   x=fwrd/bwrd
     //                     pos=left
+    //        angle 0 = audience angle = 90 to blue people side.
+    //        Positive x = audience  Positive y = blue people side
     public void goToPosition(double yLocation, double xLocation, double headingDegree, double power, double holdTime)
     {
         driveController.reset(yLocation, power);
@@ -230,6 +241,75 @@ public class DriveBasePID extends DriveBaseOdometry
         drive(axialPower, -lateralPower, -yawPower);
 
         //myOpMode.telemetry.update();
+    }
+
+    public void driveWithHold(double axialInput, double lateralInput, double yawInput) {
+        updatePosition();
+
+        // Deadband joystick
+        boolean driverMoving =
+                Math.abs(axialInput) > 0.05 ||
+                        Math.abs(lateralInput) > 0.05 ||
+                        Math.abs(yawInput) > 0.05;
+
+        if (driverMoving) {
+            // Update targets based on driver input
+            double headingRad = Math.toRadians(getHeading(AngleUnit.DEGREES));
+
+            double fieldX =
+                    axialInput * Math.cos(headingRad) -
+                            lateralInput * Math.sin(headingRad);
+
+            double fieldY =
+                    axialInput * Math.sin(headingRad) +
+                            lateralInput * Math.cos(headingRad);
+
+            double dt = loopTimer.seconds();
+            loopTimer.reset();
+
+            double driveSpeed = 25;   // inches/sec
+            double turnSpeed = 120;   // deg/sec
+
+            desiredX += fieldX * driveSpeed * dt;
+            desiredY += fieldY * driveSpeed * dt;
+            desiredHeading += yawInput * turnSpeed * dt;
+
+        }
+
+        // PID correction back to target
+        double xError = desiredX - getXPosition(DistanceUnit.INCH);
+        double yError = desiredY - getYPosition(DistanceUnit.INCH);
+
+        double negHeading = -getHeading(AngleUnit.RADIANS);
+
+        double rotatedX =
+                xError * Math.cos(negHeading) -
+                        yError * Math.sin(negHeading);
+
+        double rotatedY =
+                xError * Math.sin(negHeading) +
+                        yError * Math.cos(negHeading);
+
+        double axialPower = driveController.getOutputFromError(rotatedX);
+        double lateralPower = strafeController.getOutputFromError(rotatedY);
+        double yawPower = yawController.getOutputFromError(
+                desiredHeading - getHeading(AngleUnit.DEGREES)
+        );
+
+        drive(axialPower, lateralPower, yawPower);
+    }
+
+    public void initDriveHold() {
+        loopTimer.reset();
+        desiredX = getXPosition(DistanceUnit.INCH);
+        desiredY = getYPosition(DistanceUnit.INCH);
+        desiredHeading = getHeading(AngleUnit.DEGREES);
+
+        driveController.reset(desiredX);
+        strafeController.reset(desiredY);
+        yawController.reset(desiredHeading);
+
+        holdingPosition = true;
     }
 
 

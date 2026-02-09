@@ -170,6 +170,8 @@ public class AprilTagVision extends WisdomBot {
         drive(axialPower * power, 0, yawPower * power);  // No lateral (strafe) movement
     }
 
+
+
     /**
      * Aligns robot to only match the bearing angle to a specific tag, without moving forward/back.
      *
