@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.robots;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -64,10 +66,10 @@ public class WisdomBot extends DriveBasePID {
         leftFeeder = myOpMode.hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = myOpMode.hardwareMap.get(CRServo.class, "right_feeder");
 
-        launcher.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        launcher.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         launcher.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(209.5, 0, 0, 13.10111));
-
+        // launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(270, 0, 0, 12.8));
+                                                                                            //p 209.5     f 13.10111
         leftFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
@@ -139,21 +141,38 @@ public class WisdomBot extends DriveBasePID {
                 try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             }
 
-            // Stop feeder between shots
-            leftFeeder.setPower(STOP_SPEED);
-            rightFeeder.setPower(STOP_SPEED);
 
-            // delay between shots
-            stopTimer.reset();
-            while (stopTimer.seconds() < 0.5) {
-                try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-            }
 
             count++;
         }
 
         // Step 4: Turn off launcher
         launcher.setVelocity(0);
+    }
+
+    public void fastLaunch(int wantValue, int minValue) throws InterruptedException {
+        launcher.setPower(1);
+        Thread.sleep(5000);
+        while( feederTimer.seconds() < 20){
+            launcher.setPower(1);
+
+
+                leftFeeder.setPower(1);
+                rightFeeder.setPower(1);
+                leftFeeder.setPower(0.4);
+                rightFeeder.setPower(0.4);
+
+
+
+
+
+        }
+        launcher.setVelocity(0);
+        leftFeeder.setPower(0);
+        rightFeeder.setPower(0);
+        feederTimer.reset();
+
+
     }
 
 

@@ -71,7 +71,7 @@ public class AprilTagVision extends WisdomBot {
             rgbIndicator = null;
         }
 
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 60);
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 144);
     }
 
     public void update() {
