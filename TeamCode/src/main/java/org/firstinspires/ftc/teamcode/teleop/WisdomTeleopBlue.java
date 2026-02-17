@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com. qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires. ftc.robotcore.external. navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation. DistanceUnit;
@@ -20,6 +21,17 @@ public class WisdomTeleopBlue extends LinearOpMode {
     double lockx = 0.0;
     double locky = 0.0;
     double lockheading = 0.0;
+
+
+    double kp = 0.0340;
+    double error = 0;
+    double lastError = 0;
+    double goalX = -4;
+    double angleTolerance = 0.4;
+
+    double kd = 0.0008;
+    double currTimer = 0;
+    double lastTime = 0;
 
 
 
@@ -122,9 +134,41 @@ public class WisdomTeleopBlue extends LinearOpMode {
             if(gamepad1.right_trigger > 0.5){
                 robot.autoLaunch(1476, 1475);
             }
+
+
+            //=============== Auto Align ================
             if(gamepad1.left_trigger > 0.5){
-                robot.autoLaunch(2050, 2000);
+
+                if(robot.getTagID() == 20 || robot.getTagID() == 24 ){
+                    error = goalX - robot.getTagBearing();  // tx
+
+                    if(Math.abs(error) < angleTolerance){
+                        yaw = 0;
+                    }else{
+                        double pterm = error * kp;
+
+                        currTimer = getRuntime();
+                        double dT = currTimer - lastTime;
+                        double dTerm = ((error - lastError) / dT) * kd;
+                        yaw = Range.clip(pterm + dTerm, -1, 1);
+                        lastError = error;
+                        lastTime = currTimer;
+                    }
+                }else{
+                    lastTime = getRuntime();
+                    lastError = 0;
+                }
+
+
+
+            }else{
+                lastError =0;
+                lastTime = getRuntime();
             }
+
+            // Drive Robot
+            robot.drive(axial, lateral, yaw, 1);
+
 
             if(gamepad1.startWasPressed()){
                 robot.toggleFC();

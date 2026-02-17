@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.support.PoseStorage;
 
-@Autonomous(name = "Set Start Pose Test")
-public class test extends LinearOpMode {
+@Autonomous(name = "Test")
+public class help extends LinearOpMode {
 
     AprilTagVision Blue = new AprilTagVision(this, false);
 
@@ -61,22 +61,9 @@ public class test extends LinearOpMode {
             telemetry.update();
 
             //Blue.goToPosition(0,0,0,0.5, 1);
-            Blue.goToPosition(-24, -46, 0, .9, 0.1 );
-            //Blue.goToPosition(-10, 55, 0, .9, .11);
-            Blue.goToPosition(-10, 55, 29, .9, .1);// blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, 36, -90, .9, .1);//first line
-            Blue.goToPosition(-46, 36, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);// blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, 10, -90, .9, .1);//mid line
-            Blue.goToPosition(-46, 10, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);//blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, -9, -90, .9, .1);//last line
-            Blue.goToPosition(-46, -11, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);
-            //Blue.autoLaunch(1800, 1810);
+
+            Blue.goToPosition(-10, 55, 29, .6, .1);// blue launch zone
+
             PoseStorage.currentPose = Blue.getRobotPosition();
 
 
