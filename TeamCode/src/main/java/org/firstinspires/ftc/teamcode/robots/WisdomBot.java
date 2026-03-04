@@ -68,8 +68,8 @@ public class WisdomBot extends DriveBasePID {
 
         launcher.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         launcher.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        // launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(270, 0, 0, 12.8));
-                                                                                            //p 209.5     f 13.10111
+        launcher.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(270.5, 0, 0, 12.8));
+                                                                                            //p 270.5     f 12.8
         leftFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
@@ -151,22 +151,20 @@ public class WisdomBot extends DriveBasePID {
     }
 
     public void fastLaunch(int wantValue, int minValue) throws InterruptedException {
-        launcher.setPower(1);
-        Thread.sleep(5000);
-        while( feederTimer.seconds() < 20){
-            launcher.setPower(1);
+        while(launcher.getVelocity() < minValue){
+            launcher.setPower(wantValue);
+        }
+
+        leftFeeder.setPower(.7);
+        rightFeeder.setPower(.7);
 
 
-                leftFeeder.setPower(1);
-                rightFeeder.setPower(1);
-                leftFeeder.setPower(0.4);
-                rightFeeder.setPower(0.4);
-
-
-
-
+        while(feederTimer.seconds() < 9) {
+            launcher.setVelocity(wantValue);
 
         }
+
+
         launcher.setVelocity(0);
         leftFeeder.setPower(0);
         rightFeeder.setPower(0);

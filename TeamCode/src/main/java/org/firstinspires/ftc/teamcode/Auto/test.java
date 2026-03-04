@@ -61,21 +61,10 @@ public class test extends LinearOpMode {
             telemetry.update();
 
             //Blue.goToPosition(0,0,0,0.5, 1);
-            Blue.goToPosition(-24, -46, 0, .9, 0.1 );
+            //Blue.goToPosition(-24, -46, 0, .9, 0.1 );
             //Blue.goToPosition(-10, 55, 0, .9, .11);
-            Blue.goToPosition(-10, 55, 29, .9, .1);// blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, 36, -90, .9, .1);//first line
-            Blue.goToPosition(-46, 36, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);// blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, 10, -90, .9, .1);//mid line
-            Blue.goToPosition(-46, 10, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);//blue launch zone
-            //Blue.autoLaunch(1800, 1810);
-            Blue.goToPosition(-24, -9, -90, .9, .1);//last line
-            Blue.goToPosition(-46, -11, -90, .9, .1);
-            Blue.goToPosition(-10, 55, 29, .9, .1);
+            Blue.goToPosition(-10, 55, 29, .5, .3);// blue launch zone
+            Blue.autoLaunch(1700, 1690);
             //Blue.autoLaunch(1800, 1810);
             PoseStorage.currentPose = Blue.getRobotPosition();
 

@@ -7,7 +7,7 @@ public class ConstantsPID
 {
     // Constants dealing with moving forward and backward
     public static double DRIVE_KP = 0.2;
-    public static double DRIVE_KI = 0.001;
+    public static double DRIVE_KI = 0;
     public static double DRIVE_KD = 0.02;
     public static final double DRIVE_TOLERANCE = 0.5;
     public static final double DRIVE_DEADBAND = 0.25; // must be less than tolerance
@@ -16,7 +16,7 @@ public class ConstantsPID
 
     // Constants dealing with moving side to side
     public static double STRAFE_KP = 0.2;//0.5
-    public static double STRAFE_KI = 0.001;
+    public static double STRAFE_KI = 0.00;
     public static double STRAFE_KD = 0.02;
     public static final double STRAFE_TOLERANCE = 0.5;
     public static final double STRAFE_DEADBAND = 0.25; //must be less than tolerance
@@ -25,17 +25,17 @@ public class ConstantsPID
 
     // Constants dealing with turning
     public static double YAW_KP = 0.02;
-    public static double YAW_KI = 0.001;
+    public static double YAW_KI = 0;
     public static double YAW_KD = 0;
     public static final double YAW_TOLERANCE = 2;//1
     public static final double YAW_DEADBAND = .25;
     public static final double YAW_MAX_AUTO = 0.8;
 
     //Constants dealing with launch velocity
-    public static double LAUNCHER_HIGH_VELOCITY = 1670;
-    public static double LAUNCHER_LOWER_VELOCITY = 1660;
-    public static double LAUNCHER_TARGET_VELOCITY = 1370;
-    public static double LAUNCHER_MIN_VELOCITY = 1350;
+    public static double LAUNCHER_HIGH_VELOCITY = 1800;  //1670
+    public static double LAUNCHER_LOWER_VELOCITY = 1780; //1660
+    public static double LAUNCHER_TARGET_VELOCITY = 1450; //1370
+    public static double LAUNCHER_MIN_VELOCITY = 1440; //1350
 
 
 

@@ -29,7 +29,7 @@ public class WisdomTeleopRed extends LinearOpMode {
     String lastRGBColor = "OFF";
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robot.init();
@@ -125,7 +125,7 @@ public class WisdomTeleopRed extends LinearOpMode {
             robot.launchHigh(gamepad1.leftBumperWasPressed());
 
             if(gamepad1.right_trigger > 0.5){
-                robot.autoLaunch(1476, 1475);
+                robot.fastLaunch(1476, 1475);
             }
             if(gamepad1.left_trigger > 0.5){
                 robot.autoLaunch(2050, 2000);

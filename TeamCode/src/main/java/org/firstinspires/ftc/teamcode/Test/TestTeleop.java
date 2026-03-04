@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.robots.AprilTagVision;
 import org.firstinspires.ftc.teamcode.robots.AprilTagVision.RGBColor;
 import org.firstinspires.ftc.teamcode.support.PoseStorage;
 
-@TeleOp(name="OdoTeleop", group="Test")
-public class odoTeleop extends LinearOpMode {
+@TeleOp(name="Testing teleop", group="Test")
+public class TestTeleop extends LinearOpMode {
 
     AprilTagVision robot = new AprilTagVision(this,false);
 
@@ -45,27 +45,35 @@ public class odoTeleop extends LinearOpMode {
         robot.init();
 
         // ===== SET START POSITION =====
-        robot.setRobotPosition(
-                new Pose2D(
-                        DistanceUnit.INCH,
-                        -47,
-                        -53,
-                        AngleUnit.DEGREES,
-                        48));
+        Pose2D startPose = PoseStorage.currentPose;
 
-        driveState=DriveState.DRIVE;
+        if (startPose != null) {
+            robot.setRobotPosition(startPose);
+            telemetry.addLine("Using PoseStorage.currentPose for start pose");
+        } else {
+            // Fallback if you didn't run auto / pose wasn't saved
+            robot.setRobotPosition(
+                    new Pose2D(
+                            DistanceUnit.INCH,
+                            -47,
+                            -53,
+                            AngleUnit.DEGREES,
+                            48));
+            telemetry.addLine("PoseStorage.currentPose was null; using fallback start pose");
+        }
+
+        driveState= DriveState.DRIVE;
 
         telemetry.addLine("Ready - Press Start");
         telemetry.update();
 
         waitForStart();
-        robot.setRobotPosition(
-                new Pose2D(
-                        DistanceUnit.INCH,
-                        -47,
-                        -53,
-                        AngleUnit.DEGREES,
-                        48));
+        if (startPose != null) {
+            robot.setRobotPosition(startPose);
+            telemetry.addLine("Using PoseStorage.currentPose for start pose");
+        }else{
+            robot.setRobotPosition(new Pose2D(DistanceUnit.INCH, -47, -53, AngleUnit.DEGREES, 48));
+        }
 
         while(opModeIsActive()){
 
@@ -105,15 +113,15 @@ public class odoTeleop extends LinearOpMode {
                 robot.setLockHeading(
                         pose.getHeading(AngleUnit.DEGREES));
 
-                driveState=DriveState.POSITION_LOCK;
+                driveState= DriveState.POSITION_LOCK;
             }
 
             if(gamepad1.left_trigger>0.5){
-                driveState=DriveState.TAG_ALIGN;
+                driveState= DriveState.TAG_ALIGN;
             }
 
             if(gamepad1.crossWasPressed()){
-                driveState=DriveState.DRIVE;
+                driveState= DriveState.DRIVE;
             }
 
             boolean sticksActive=
@@ -122,11 +130,11 @@ public class odoTeleop extends LinearOpMode {
                             Math.abs(yawInput)>0.01;
 
             if(sticksActive &&
-                    driveState!=DriveState.TAG_ALIGN){
-                driveState=DriveState.DRIVE;
+                    driveState!= DriveState.TAG_ALIGN){
+                driveState= DriveState.DRIVE;
             }
             else if(!sticksActive &&
-                    driveState==DriveState.DRIVE){
+                    driveState== DriveState.DRIVE){
 
                 Pose2D pose=robot.getRobotPosition();
 
@@ -138,7 +146,7 @@ public class odoTeleop extends LinearOpMode {
                 robot.setLockHeading(
                         pose.getHeading(AngleUnit.DEGREES));
 
-                driveState=DriveState.POSITION_LOCK;
+                driveState= DriveState.POSITION_LOCK;
             }
 
             switch(driveState){
@@ -156,7 +164,7 @@ public class odoTeleop extends LinearOpMode {
 
                     if(gamepad1.left_trigger<=0.5 ||
                             Math.abs(yawInput)>0.15){
-                        driveState=DriveState.DRIVE;
+                        driveState= DriveState.DRIVE;
                         break;
                     }
 
@@ -191,15 +199,10 @@ public class odoTeleop extends LinearOpMode {
                     break;
             }
 
-            robot.launch(
-                    gamepad1.rightBumperWasPressed());
+            robot.launch(gamepad1.rightBumperWasPressed());
 
-            robot.launchHigh(
-                    gamepad1.leftBumperWasPressed());
+            robot.launchHigh(gamepad1.leftBumperWasPressed());
 
-            if(gamepad1.right_trigger>0.5){
-                robot.fastLaunch(1950,1940);
-            }
 
             if(gamepad1.startWasPressed()){
                 robot.toggleFC();
@@ -242,8 +245,8 @@ public class odoTeleop extends LinearOpMode {
         while(error > 180) error -= 360;
         while(error < -180) error += 360;
 
-        double kp = 0.001;//0.001
-        double kd = 0.00000001; // 0.000001
+        double kp = 0.02;//0.001
+        double kd = 0; // 0.000001
 
         double now = getRuntime();
         double dt = now - lastTurnTime;
